@@ -1,4 +1,4 @@
-package kr.bb.notification.domain.notification.entity;
+package kr.bb.notification.common;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
