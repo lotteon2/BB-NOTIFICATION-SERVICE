@@ -1,4 +1,4 @@
-package kr.bb.notification.entity;
+package kr.bb.notification.domain.notification.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
