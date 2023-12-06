@@ -1,5 +1,8 @@
 package kr.bb.notification.entity;
 
+import bloomingblooms.domain.resale.ResaleNotificationData;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,4 +43,11 @@ public class MemberNotification extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JoinColumn(name = "notificationId")
   private Notification notification;
+
+  public static List<MemberNotification> getMemberNotification(
+      List<ResaleNotificationData> resaleNotificationData) {
+    return resaleNotificationData.stream()
+        .map(item -> MemberNotification.builder().userId(item.getUserId()).build())
+        .collect(Collectors.toList());
+  }
 }
