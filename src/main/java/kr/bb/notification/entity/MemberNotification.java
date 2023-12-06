@@ -35,8 +35,9 @@ public class MemberNotification extends BaseEntity {
   @Column(name = "user_id")
   private Long userId;
 
+  @Builder.Default
   @Column(name = "is_read")
-  private Boolean isRead;
+  private Boolean isRead = false;
 
   @ManyToOne(
       fetch = FetchType.LAZY,
