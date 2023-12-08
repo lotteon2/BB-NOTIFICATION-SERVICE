@@ -1,12 +1,15 @@
 server:
   port: 8400
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: notification-service
   config:
     activate:
-      on-profile: local, dev, local
-    import: optional:configserver:http://localhost:8888
+      on-profile: dev
+    import: optional:configserver:http://config-service:8888
 management:
   endpoints:
     web:
