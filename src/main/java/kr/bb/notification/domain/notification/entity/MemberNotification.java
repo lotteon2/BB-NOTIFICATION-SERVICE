@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
@@ -28,7 +30,7 @@ public class MemberNotification extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "member_notification_id")
-  private Long id;
+  private Long memberNotificationId;
 
   @Column(name = "user_id")
   private Long userId;
@@ -36,9 +38,10 @@ public class MemberNotification extends BaseEntity {
   @Column(name = "is_read")
   private Boolean isRead;
 
+  @JsonIgnore
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @JoinColumn(name = "notificationId")
+  @JoinColumn(name = "notification_id")
   private Notification notification;
 }
