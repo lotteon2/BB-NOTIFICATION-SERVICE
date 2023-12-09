@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.Notification;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.UnreadNotificationCount;
 import kr.bb.notification.domain.notification.repository.NotificationJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,9 @@ class NotificationQueryFacadeHandlerTest {
   @DisplayName("안읽은 알림 조회")
   void getUnreadNotification() {
     createNotification();
-    Long unreadNotification = notificationQueryFacadeHandler.getUnreadNotification(1L);
-    assertThat(unreadNotification).isEqualTo(3);
+    UnreadNotificationCount unreadNotification =
+        notificationQueryFacadeHandler.getUnreadNotification(1L);
+    assertThat(unreadNotification.getUnreadCount()).isEqualTo(3);
   }
 
   private void createNotification() {

@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.facade;
 
 import kr.bb.notification.domain.notification.application.NotificationQueryService;
+import kr.bb.notification.domain.notification.entity.NotificationCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component;
 public class NotificationQueryFacadeHandler {
   private final NotificationQueryService notificationQueryService;
 
-  public Long getUnreadNotification(Long userId) {
-    return notificationQueryService.getUnreadNotificationCount(userId);
+  public NotificationCommand.UnreadNotificationCount getUnreadNotification(Long userId) {
+    return NotificationCommand.UnreadNotificationCount.getData(
+        notificationQueryService.getUnreadNotificationCount(userId));
   }
 }
