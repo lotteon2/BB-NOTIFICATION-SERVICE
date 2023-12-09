@@ -1,61 +1,53 @@
 package kr.bb.notification.domain.notification.infrastructure.sms;
 
-import bloomingblooms.domain.notification.NotificationData;
-import bloomingblooms.domain.resale.ResaleNotificationData;
-import com.amazonaws.services.sns.AmazonSNSAsync;
-import com.amazonaws.services.sns.model.MessageAttributeValue;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import kr.bb.notification.config.AWSConfiguration;
+import kr.bb.notification.domain.notification.infrastructure.action.InfrastructureActionHandler;
+import kr.bb.notification.entity.NotificationCommand;
+import kr.bb.notification.entity.NotificationCommand.SMSNotification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
+import software.amazon.awssdk.services.sns.model.SetSmsAttributesRequest;
+import software.amazon.awssdk.services.sns.model.SnsException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class SendSMS {
-  private final AmazonSNSAsync amazonSNSAsync;
+public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
+  private final AWSConfiguration awsConfiguration;
 
-  public void sendSMS(NotificationData<List<ResaleNotificationData>> data) {
-    // TODO: 메세지 v2로 변경 고려해보기
-    data.getWhoToNotify()
-        .forEach(
-            item -> {
-              Map<String, MessageAttributeValue> smsAttributes =
-                  new HashMap<String, MessageAttributeValue>();
-              smsAttributes.put(
-                  "AWS.SNS.SMS.SenderID",
-                  new MessageAttributeValue()
-                      .withStringValue("bb") // The sender ID shown on the device.
-                      .withDataType("String"));
-              smsAttributes.put(
-                  "AWS.SNS.SMS.MaxPrice",
-                  new MessageAttributeValue()
-                      .withStringValue("0.50") // Sets the max price to 0.50 USD.
-                      .withDataType("Number"));
-              smsAttributes.put(
-                  "AWS.SNS.SMS.SMSType",
-                  new MessageAttributeValue()
-                      .withStringValue("Promotional") // Sets the type to promotional.
-                      .withDataType("String"));
-              PublishRequest request =
-                  new PublishRequest()
-                      .withPhoneNumber(item.getPhoneNumber())
-                      .withMessage(data.getMessage())
-                      .withMessageAttributes(smsAttributes);
+  private static PublishRequest makePublishRequest(SMSNotification notifyData) {
+    return PublishRequest.builder()
+        .message(notifyData.getContent())
+        .phoneNumber(notifyData.getPhoneNumber())
+        .build();
+  }
 
-              try {
-                Future<PublishResult> future = amazonSNSAsync.publishAsync(request);
-                PublishResult publishResult = future.get();
-                System.out.printf(
-                    "message to : %s%n%s", item.getPhoneNumber(), publishResult.getMessageId());
-              } catch (ExecutionException | InterruptedException e) {
-                throw new RuntimeException(e);
-              }
-            });
-    amazonSNSAsync.shutdown();
+  private static void setSMSAttribute(SnsClient snsClient) {
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("DefaultSMSType", "Promotional");
+    SetSmsAttributesRequest request =
+        SetSmsAttributesRequest.builder().attributes(attributes).build();
+    snsClient.setSMSAttributes(request);
+  }
+
+  @Override
+  public NotificationCommand.SMSNotification publishCustomer(
+      NotificationCommand.SMSNotification notifyData) {
+    SnsClient snsClient = awsConfiguration.snsClient();
+    try {
+      setSMSAttribute(snsClient);
+      PublishRequest publishRequest = makePublishRequest(notifyData);
+      PublishResponse response = snsClient.publish(publishRequest);
+      log.info(response.messageId() + " message sent " + response.sdkHttpResponse().statusCode());
+    } catch (SnsException e) {
+      log.error("재입고 알림 메세지 전송 실패");
+    }
+    return notifyData;
   }
 }

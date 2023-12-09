@@ -1,6 +1,7 @@
 package kr.bb.notification.entity;
 
 import bloomingblooms.domain.resale.ResaleNotificationData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kr.bb.notification.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +32,7 @@ public class MemberNotification extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "member_notification_id")
-  private Long id;
+  private Long memberNotificationId;
 
   @Column(name = "user_id")
   private Long userId;
@@ -39,10 +41,11 @@ public class MemberNotification extends BaseEntity {
   @Column(name = "is_read")
   private Boolean isRead = false;
 
+  @JsonIgnore
   @ManyToOne(
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @JoinColumn(name = "notificationId")
+  @JoinColumn(name = "notification_id")
   private Notification notification;
 
   public static List<MemberNotification> getMemberNotification(
