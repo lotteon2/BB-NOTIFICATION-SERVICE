@@ -22,15 +22,15 @@ class MemberNotificationJpaRepositoryTest {
   void findUnreadNotificationCount() {
     List<MemberNotification> list = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      list.add(MemberNotification.builder().userId(1L).isRead(true).build());
+      list.add(MemberNotification.builder().userId(10L).isRead(true).build());
     }
     for (int i = 0; i < 3; i++) {
-      list.add(MemberNotification.builder().userId(1L).isRead(false).build());
+      list.add(MemberNotification.builder().userId(10L).isRead(false).build());
     }
     Notification build = Notification.builder().memberNotifications(list).build();
     notificationJpaRepository.save(build);
 
-    Long unreadNotificationCount = memberNotificationJpaRepository.findUnreadNotificationCount(1L);
+    Long unreadNotificationCount = memberNotificationJpaRepository.findUnreadNotificationCount(10L);
     assertThat(unreadNotificationCount).isEqualTo(3);
   }
 }
