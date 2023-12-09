@@ -26,12 +26,12 @@ class NotificationQueryFacadeHandlerTest {
     for (int i = 0; i < 5; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(1L).isRead(true).build());
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
     }
     for (int i = 0; i < 3; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(1L).isRead(false).build());
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
     }
     notificationJpaRepository.save(build);
   }
@@ -40,7 +40,7 @@ class NotificationQueryFacadeHandlerTest {
   @DisplayName("알림 정보 조회")
   void getNotifications() {
     createNotifications();
-    NotificationList notifications = notificationQueryFacadeHandler.getNotifications(1L);
+    NotificationList notifications = notificationQueryFacadeHandler.getNotifications(8L);
     assertThat(notifications.getNotifications().size()).isEqualTo(8);
     assertThat(notifications.getNotifications().get(0).getNotificationContent())
         .isEqualTo("content");

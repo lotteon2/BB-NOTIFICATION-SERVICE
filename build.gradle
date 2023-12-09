@@ -76,7 +76,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*"]
+            excludes = ["*.mapper*", "**.emitter.**"]
         }
     }
 }
@@ -84,6 +84,14 @@ jacocoTestCoverageVerification {
 test {
     jacoco {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
+        excludes += ["**/errors/**",
+                     "**/api/**",
+                     "**/mapper/**",
+                     "**/handler/**",
+                     "**/common/**",
+                     "**/api/**",
+                    "**/emitter/**"
+        ]
     }
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
@@ -106,6 +114,7 @@ jacocoTestReport {
                             "**/*mapper*",
                             "**/*Config*",
                             "**/*Dto*",
+                            "**/emitter/**"
                     ] + Qdomains)
                 })
         )

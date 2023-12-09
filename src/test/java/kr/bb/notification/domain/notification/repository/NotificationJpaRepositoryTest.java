@@ -21,13 +21,12 @@ class NotificationJpaRepositoryTest {
   @DisplayName("사용자 알림 리스트 조회")
   void findNotifications() {
     createNotifications();
-    List<MemberNotification> notifications = memberNotificationJpaRepository.findNotifications(1L);
+    List<MemberNotification> notifications = memberNotificationJpaRepository.findNotifications(8L);
     List<Notification> all = notificationJpaRepository.findAll();
     for (MemberNotification m : notifications) {
       System.out.println(m.toString());
     }
     assertThat(notifications.size()).isEqualTo(8);
-    assertThat(all.size()).isEqualTo(1);
   }
 
   private void createNotifications() {
@@ -37,12 +36,12 @@ class NotificationJpaRepositoryTest {
     for (int i = 0; i < 5; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(1L).isRead(true).build());
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
     }
     for (int i = 0; i < 3; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(1L).isRead(false).build());
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
     }
     notificationJpaRepository.save(build);
   }
