@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class MemberNotificationCommand {
 
-  public static List<MemberNotification> toEntity(ResaleNotificationList whoToNotify) {
+  public static List<MemberNotification> toEntityList(ResaleNotificationList whoToNotify) {
     return whoToNotify.getResaleNotificationData().stream()
         .map(item -> MemberNotification.builder().userId(item.getUserId()).build())
         .collect(Collectors.toList());
