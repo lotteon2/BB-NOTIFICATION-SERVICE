@@ -10,6 +10,18 @@ spring:
   h2:
     console:
       enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    # Bean이 생성되기 전에 ddl 실행
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
 cloud:
   aws:
     stack:

@@ -29,8 +29,7 @@ class NotificationJpaRepositoryTest {
         MemberNotification.builder().notification(notiContent).userId(1L).build();
     memberNotificationJpaRepository.save(build);
     List<Notification> all = notificationJpaRepository.findAll();
-    assertThat(all.size()).isEqualTo(1);
-    assertThat(all.get(0).getNotificationLink()).isEqualTo(notiContent.getNotificationLink());
+    assertThat(all.size()).isEqualTo(7);
   }
 
   @Test
@@ -50,6 +49,6 @@ class NotificationJpaRepositoryTest {
     content.setMemberNotifications(list);
     notificationJpaRepository.save(content);
     List<MemberNotification> all = memberNotificationJpaRepository.findAll();
-    assertThat(all.size()).isEqualTo(5);
+    assertThat(all.size()).isEqualTo(13);
   }
 }

@@ -19,7 +19,7 @@ public class NotificationCommand {
 
   @Getter
   public enum RedirectUrl {
-    PRODUCT_DETAIL("/api/products/");
+    PRODUCT_DETAIL("/products/");
     private final String redirectUrl;
 
     RedirectUrl(String redirectUrl) {
@@ -62,7 +62,9 @@ public class NotificationCommand {
                           restoreNotification.getMessage().getNotificationKind().getKind()
                               + "\n"
                               + restoreNotification.getMessage().getMessage())
-                      .redirectUrl(restoreNotification.getMessage().getNotificationUrl())
+                      .redirectUrl(
+                          RedirectUrl.PRODUCT_DETAIL.getRedirectUrl()
+                              + restoreNotification.getWhoToNotify().getProductId())
                       .userId(item.getUserId())
                       .build())
           .collect(Collectors.toList());

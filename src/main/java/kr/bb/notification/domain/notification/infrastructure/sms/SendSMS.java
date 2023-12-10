@@ -22,7 +22,7 @@ public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
 
   private static PublishRequest makePublishRequest(SMSNotification notifyData) {
     return PublishRequest.builder()
-        .message(notifyData.getContent())
+        .message(notifyData.getContent() + "\n" + notifyData.getRedirectUrl())
         .phoneNumber(notifyData.getPhoneNumber())
         .build();
   }
