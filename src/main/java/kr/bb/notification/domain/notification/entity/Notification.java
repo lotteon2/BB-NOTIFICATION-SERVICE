@@ -1,4 +1,4 @@
-package kr.bb.notification.entity;
+package kr.bb.notification.domain.notification.entity;
 
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kr.bb.notification.entity.NotificationCommand.RedirectUrl;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.RedirectUrl;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

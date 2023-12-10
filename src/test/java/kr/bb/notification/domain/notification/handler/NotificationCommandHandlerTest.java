@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.repository.MemberNotificationJpaRepository;
-import kr.bb.notification.entity.MemberNotification;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package kr.bb.notification.entity;
+package kr.bb.notification.domain.notification.entity;
 
 import bloomingblooms.domain.resale.ResaleNotificationData;
 import com.fasterxml.jackson.annotation.JsonIgnore;

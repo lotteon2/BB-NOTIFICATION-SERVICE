@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import kr.bb.notification.entity.MemberNotification;
-import kr.bb.notification.entity.Notification;
+import kr.bb.notification.domain.notification.entity.MemberNotification;
+import kr.bb.notification.domain.notification.entity.Notification;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

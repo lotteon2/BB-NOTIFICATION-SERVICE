@@ -1,6 +1,9 @@
 server:
   port: 8400
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: notification-service
   config:

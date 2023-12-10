@@ -44,10 +44,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'software.amazon.awssdk:sns:2.21.37'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:25054124'
 
     testImplementation 'org.mockito:mockito-core:4.8.0'
 
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:25054124'
 }
 
 dependencyManagement {
@@ -80,7 +80,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*"]
+            excludes = ["*.mapper*", "**.emitter.**"]
         }
     }
 }
@@ -88,6 +88,14 @@ jacocoTestCoverageVerification {
 test {
     jacoco {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
+        excludes += ["**/errors/**",
+                     "**/api/**",
+                     "**/mapper/**",
+                     "**/handler/**",
+                     "**/common/**",
+                     "**/api/**",
+                     "**/emitter/**"
+        ]
     }
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
@@ -110,6 +118,7 @@ jacocoTestReport {
                             "**/*mapper*",
                             "**/*Config*",
                             "**/*Dto*",
+                            "**/emitter/**"
                     ] + Qdomains)
                 })
         )

@@ -1,10 +1,11 @@
-package kr.bb.notification.entity;
+package kr.bb.notification.domain.notification.entity;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.notification.domain.notification.entity.Notification;
 import lombok.Builder;
 import lombok.Getter;
 
