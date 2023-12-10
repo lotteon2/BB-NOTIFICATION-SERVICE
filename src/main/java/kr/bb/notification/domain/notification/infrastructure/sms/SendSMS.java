@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import kr.bb.notification.config.AWSConfiguration;
 import kr.bb.notification.domain.notification.infrastructure.action.InfrastructureActionHandler;
-import kr.bb.notification.entity.NotificationCommand;
 import kr.bb.notification.entity.NotificationCommand.SMSNotification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +36,7 @@ public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
   }
 
   @Override
-  public NotificationCommand.SMSNotification publishCustomer(
-      NotificationCommand.SMSNotification notifyData) {
+  public void publishCustomer(SMSNotification notifyData) {
     SnsClient snsClient = awsConfiguration.snsClient();
     try {
       setSMSAttribute(snsClient);
@@ -48,6 +46,5 @@ public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
     } catch (SnsException e) {
       log.error("재입고 알림 메세지 전송 실패");
     }
-    return notifyData;
   }
 }
