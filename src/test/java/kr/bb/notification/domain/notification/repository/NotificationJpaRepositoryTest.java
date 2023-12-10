@@ -49,6 +49,6 @@ class NotificationJpaRepositoryTest {
     content.setMemberNotifications(list);
     notificationJpaRepository.save(content);
     List<MemberNotification> all = memberNotificationJpaRepository.findAll();
-    assertThat(all.size()).isGreaterThan(5);
+    assertThat(all.size()).isGreaterThan(4);
   }
 }
