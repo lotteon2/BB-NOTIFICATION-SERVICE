@@ -5,7 +5,6 @@ import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.notification.domain.notification.entity.Notification;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -62,6 +61,7 @@ public class NotificationCommand {
                       .content(
                           restoreNotification.getMessage().getNotificationKind().getKind()
                               + "\n"
+                              + restoreNotification.getWhoToNotify().getProductName()
                               + restoreNotification.getMessage().getMessage())
                       .redirectUrl(
                           RedirectUrl.PRODUCT_DETAIL.getRedirectUrl()
