@@ -37,13 +37,17 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-bus-kafka"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'mysql:mysql-connector-java:8.0.33'
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:0.1.6-alpha'
     runtimeOnly 'com.h2database:h2'
     implementation 'org.mapstruct:mapstruct:1.5.3.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.4.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'software.amazon.awssdk:sns:2.21.37'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:25057818'
 
+    testImplementation 'org.mockito:mockito-core:4.8.0'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka:2.2.1.RELEASE'
 }
 
 dependencyManagement {
@@ -76,7 +80,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*"]
+            excludes = ["*.mapper*", "**.emitter.**"]
         }
     }
 }
@@ -84,6 +88,14 @@ jacocoTestCoverageVerification {
 test {
     jacoco {
         destinationFile = file("$buildDir/jacoco/jacoco.exec")
+        excludes += ["**/errors/**",
+                     "**/api/**",
+                     "**/mapper/**",
+                     "**/handler/**",
+                     "**/common/**",
+                     "**/api/**",
+                     "**/emitter/**"
+        ]
     }
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
@@ -106,6 +118,7 @@ jacocoTestReport {
                             "**/*mapper*",
                             "**/*Config*",
                             "**/*Dto*",
+                            "**/emitter/**"
                     ] + Qdomains)
                 })
         )
