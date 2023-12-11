@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'software.amazon.awssdk:sns:2.21.37'
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:25057818'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202312101522'
 
     testImplementation 'org.mockito:mockito-core:4.8.0'
 

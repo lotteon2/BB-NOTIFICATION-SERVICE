@@ -42,3 +42,6 @@ cloud:
       product-resale-notification-queue:
         name: ""
         url: ""
+      question-register-notification-queue:
+        name: ""
+        url: ""

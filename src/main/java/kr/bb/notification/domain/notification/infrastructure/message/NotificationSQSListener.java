@@ -1,11 +1,12 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.QuestionRegisterNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
-import kr.bb.notification.domain.notification.facade.ResaleNotificationFacadeHandler;
+import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationSQSListener {
   private final ObjectMapper objectMapper;
-  private final ResaleNotificationFacadeHandler resaleNotificationFacadeHandler;
+  private final NotificationFacadeHandler notificationFacadeHandler;
 
   @SqsListener(
       value = "${cloud.aws.sqs.product-resale-notification-queue.name}",
@@ -33,7 +34,25 @@ public class NotificationSQSListener {
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, ResaleNotificationList.class));
     // call facade
-    resaleNotificationFacadeHandler.publishResaleNotification(restoreNotification);
+    notificationFacadeHandler.publishResaleNotification(restoreNotification);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.question-register-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeQuestionRegisterNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<QuestionRegisterNotification> questionRegisterNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(
+                    NotificationData.class, QuestionRegisterNotification.class));
+    // call facade
+    notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
     ack.acknowledge();
   }
 }
