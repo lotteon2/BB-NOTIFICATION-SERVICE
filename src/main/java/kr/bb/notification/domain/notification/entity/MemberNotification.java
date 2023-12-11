@@ -1,6 +1,10 @@
 package kr.bb.notification.domain.notification.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import bloomingblooms.domain.resale.ResaleNotificationData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,8 +39,9 @@ public class MemberNotification extends BaseEntity {
   @Column(name = "user_id")
   private Long userId;
 
+  @Builder.Default
   @Column(name = "is_read")
-  private Boolean isRead;
+  private Boolean isRead = false;
 
   @JsonIgnore
   @ManyToOne(
@@ -44,4 +49,11 @@ public class MemberNotification extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JoinColumn(name = "notification_id")
   private Notification notification;
+
+  public static List<MemberNotification> getMemberNotification(
+      List<ResaleNotificationData> resaleNotificationData) {
+    return resaleNotificationData.stream()
+        .map(item -> MemberNotification.builder().userId(item.getUserId()).build())
+        .collect(Collectors.toList());
+  }
 }

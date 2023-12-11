@@ -12,4 +12,7 @@ public interface MemberNotificationJpaRepository extends JpaRepository<MemberNot
           + "on m.notification.notificationId=n.notificationId "
           + "where m.userId=:userId")
   List<MemberNotification> findNotifications(Long userId);
+
+  @Query("select count(m) from MemberNotification m where m.userId=:userId and m.isRead=false")
+  Long findUnreadNotificationCount(Long userId);
 }

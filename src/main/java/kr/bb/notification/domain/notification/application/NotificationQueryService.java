@@ -19,4 +19,8 @@ public class NotificationQueryService {
         memberNotificationJpaRepository.findNotifications(userId);
     return NotificationCommand.NotificationList.getData(notifications);
   }
+
+  public Long getUnreadNotificationCount(Long userId) {
+    return memberNotificationJpaRepository.findUnreadNotificationCount(userId);
+  }
 }
