@@ -34,8 +34,8 @@ cloud:
     sns:
       arn: ""
     credentials:
-      ACCESS_KEY_ID: ""
-      SECRET_ACCESS_KEY: ""
+      ACCESS_KEY_ID: "test"
+      SECRET_ACCESS_KEY: "test"
     sqs:
       product-resale-notification-check-queue:
         name: ""
