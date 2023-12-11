@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 public class NotificationCommand {
-
   public static Notification toEntity(PublishNotificationInformation message) {
     return Notification.builder()
         .notificationContent(message.getMessage())
@@ -27,6 +26,14 @@ public class NotificationCommand {
       this.redirectUrl = redirectUrl;
     }
   }
+
+  @Getter
+  @Builder
+  public static class UnreadNotificationCount {
+    private Long unreadCount;
+
+    public static UnreadNotificationCount getData(Long unreadNotificationCount) {
+      return UnreadNotificationCount.builder().unreadCount(unreadNotificationCount).build();}}
 
   @Getter
   public static class NotificationInformation {

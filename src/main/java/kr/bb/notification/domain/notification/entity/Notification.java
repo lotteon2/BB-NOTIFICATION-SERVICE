@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
+
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Notification {
   @Builder.Default
   private List<MemberNotification> memberNotifications = new ArrayList<>();
 
+
   public static Notification getNotification(ResaleNotificationList item) {
     return Notification.builder()
         .notificationLink(
@@ -56,4 +58,5 @@ public class Notification {
   public void setMemberNotifications(List<MemberNotification> memberNotifications) {
     this.memberNotifications = memberNotifications;
   }
+
 }
