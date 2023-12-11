@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
@@ -46,7 +48,6 @@ public class Notification {
   @Builder.Default
   private List<MemberNotification> memberNotifications = new ArrayList<>();
 
-
   public static Notification getNotification(ResaleNotificationList item) {
     return Notification.builder()
         .notificationLink(
@@ -58,5 +59,4 @@ public class Notification {
   public void setMemberNotifications(List<MemberNotification> memberNotifications) {
     this.memberNotifications = memberNotifications;
   }
-
 }

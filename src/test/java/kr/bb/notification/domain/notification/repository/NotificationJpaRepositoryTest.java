@@ -14,8 +14,38 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 class NotificationJpaRepositoryTest {
-  @Autowired NotificationJpaRepository notificationJpaRepository;
-  @Autowired MemberNotificationJpaRepository memberNotificationJpaRepository;
+
+  @Autowired private MemberNotificationJpaRepository memberNotificationJpaRepository;
+  @Autowired private NotificationJpaRepository notificationJpaRepository;
+
+  @Test
+  @DisplayName("사용자 알림 리스트 조회")
+  void findNotifications() {
+    createNotifications();
+    List<MemberNotification> notifications = memberNotificationJpaRepository.findNotifications(8L);
+    List<Notification> all = notificationJpaRepository.findAll();
+    for (MemberNotification m : notifications) {
+      System.out.println(m.toString());
+    }
+    assertThat(notifications.size()).isEqualTo(8);
+  }
+
+  private void createNotifications() {
+    Notification build =
+        Notification.builder().notificationLink("link").notificationContent("content").build();
+
+    for (int i = 0; i < 5; i++) {
+      build
+          .getMemberNotifications()
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
+    }
+    for (int i = 0; i < 3; i++) {
+      build
+          .getMemberNotifications()
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
+    }
+    notificationJpaRepository.save(build);
+  }
 
   @Test
   @DisplayName("알림 저장 테스트 ")

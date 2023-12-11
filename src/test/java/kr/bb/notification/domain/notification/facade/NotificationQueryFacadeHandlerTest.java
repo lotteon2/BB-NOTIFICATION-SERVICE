@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.Notification;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationList;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.UnreadNotificationCount;
 import kr.bb.notification.domain.notification.repository.NotificationJpaRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -20,9 +21,39 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 class NotificationQueryFacadeHandlerTest {
+
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired NotificationJpaRepository notificationJpaRepository;
   @Autowired private NotificationQueryFacadeHandler notificationQueryFacadeHandler;
+
+
+
+  private void createNotifications() {
+    Notification build =
+        Notification.builder().notificationLink("link").notificationContent("content").build();
+
+    for (int i = 0; i < 5; i++) {
+      build
+          .getMemberNotifications()
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
+    }
+    for (int i = 0; i < 3; i++) {
+      build
+          .getMemberNotifications()
+          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
+    }
+    notificationJpaRepository.save(build);
+  }
+
+  @Test
+  @DisplayName("알림 정보 조회")
+  void getNotifications() {
+    createNotifications();
+    NotificationList notifications = notificationQueryFacadeHandler.getNotifications(8L);
+    assertThat(notifications.getNotifications().size()).isEqualTo(8);
+    assertThat(notifications.getNotifications().get(0).getNotificationContent())
+        .isEqualTo("content");
+  }
 
   @Test
   @DisplayName("안읽은 알림 조회")

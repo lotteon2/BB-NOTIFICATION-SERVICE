@@ -29,11 +29,42 @@ public class NotificationCommand {
 
   @Getter
   @Builder
+  public static class NotificationItem {
+    private Long notificationId;
+    private String notificationContent;
+    private String notificationLink;
+  }
+
+  @Getter
+  @Builder
+  public static class NotificationList {
+    private List<NotificationItem> notifications;
+
+    public static NotificationList getData(List<MemberNotification> notifications) {
+      return NotificationList.builder()
+          .notifications(
+              notifications.stream()
+                  .map(
+                      item ->
+                          NotificationItem.builder()
+                              .notificationId(item.getMemberNotificationId())
+                              .notificationLink(item.getNotification().getNotificationLink())
+                              .notificationContent(item.getNotification().getNotificationContent())
+                              .build())
+                  .collect(Collectors.toList()))
+          .build();
+    }
+  }
+
+  @Getter
+  @Builder
   public static class UnreadNotificationCount {
     private Long unreadCount;
 
     public static UnreadNotificationCount getData(Long unreadNotificationCount) {
-      return UnreadNotificationCount.builder().unreadCount(unreadNotificationCount).build();}}
+      return UnreadNotificationCount.builder().unreadCount(unreadNotificationCount).build();
+    }
+  }
 
   @Getter
   public static class NotificationInformation {
@@ -67,7 +98,10 @@ public class NotificationCommand {
                   SMSNotification.builder()
                       .phoneNumber(item.getPhoneNumber())
                       .content(
-                          restoreNotification.getPublishInformation().getNotificationKind().getKind()
+                          restoreNotification
+                                  .getPublishInformation()
+                                  .getNotificationKind()
+                                  .getKind()
                               + "\n"
                               + restoreNotification.getWhoToNotify().getProductName()
                               + restoreNotification.getPublishInformation().getMessage())
