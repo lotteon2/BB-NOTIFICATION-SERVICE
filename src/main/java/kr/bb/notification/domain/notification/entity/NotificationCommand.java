@@ -3,9 +3,11 @@ package kr.bb.notification.domain.notification.entity;
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.QuestionRegisterNotification;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -155,6 +157,21 @@ public class NotificationCommand {
                   + questionRegisterNotification.getPublishInformation().getMessage())
           .redirectUrl(questionRegisterNotification.getPublishInformation().getNotificationUrl())
           .role(questionRegisterNotification.getWhoToNotify().getRole().getRole())
+          .build();
+    }
+
+    public static SSENotification getNewOrderNotification(
+        NotificationData<NewOrderNotification> newOrderNotification) {
+      return SSENotification.builder()
+          .role(Role.MANAGER.getRole())
+          .content(
+              newOrderNotification.getPublishInformation().getNotificationKind().getKind()
+                  + "\n"
+                  + newOrderNotification.getWhoToNotify().getOrderType().getOrderType()
+                  + ": "
+                  + newOrderNotification.getPublishInformation().getMessage())
+          .redirectUrl(newOrderNotification.getPublishInformation().getNotificationUrl())
+          .userId(newOrderNotification.getWhoToNotify().getStoreId())
           .build();
     }
 
