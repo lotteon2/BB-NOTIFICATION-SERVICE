@@ -2,6 +2,7 @@ package kr.bb.notification.domain.notification.entity;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
+import bloomingblooms.domain.notification.QuestionRegisterNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class NotificationCommand {
       this.phoneNumber = phoneNumber;
     }
 
-    public static List<SMSNotification> getData(
+    public static List<SMSNotification> getResaleNotificationSMSData(
         NotificationData<ResaleNotificationList> restoreNotification) {
       return restoreNotification.getWhoToNotify().getResaleNotificationData().stream()
           .map(
@@ -66,10 +67,10 @@ public class NotificationCommand {
                   SMSNotification.builder()
                       .phoneNumber(item.getPhoneNumber())
                       .content(
-                          restoreNotification.getMessage().getNotificationKind().getKind()
+                          restoreNotification.getPublishInformation().getNotificationKind().getKind()
                               + "\n"
                               + restoreNotification.getWhoToNotify().getProductName()
-                              + restoreNotification.getMessage().getMessage())
+                              + restoreNotification.getPublishInformation().getMessage())
                       .redirectUrl(
                           RedirectUrl.PRODUCT_DETAIL.getRedirectUrl()
                               + restoreNotification.getWhoToNotify().getProductId())
@@ -93,6 +94,40 @@ public class NotificationCommand {
       @Override
       public SMSNotification build() {
         return new SMSNotification(userId, content, redirectUrl, phoneNumber);
+      }
+    }
+  }
+
+  @Getter
+  public static class SSENotification extends NotificationInformation {
+    private final String role;
+
+    @Builder
+    public SSENotification(Long userId, String content, String redirectUrl, String role) {
+      super(userId, content, redirectUrl);
+      this.role = role;
+    }
+
+    public static SSENotificationBuilder builder() {
+      return new SSENotificationBuilder();
+    }
+
+    public static SSENotification getQuestionRegisterSSEData(
+        NotificationData<QuestionRegisterNotification> questionRegisterNotification) {
+      return SSENotification.builder()
+          .content(
+              questionRegisterNotification.getPublishInformation().getNotificationKind().getKind()
+                  + "\n"
+                  + questionRegisterNotification.getPublishInformation().getMessage())
+          .redirectUrl(questionRegisterNotification.getPublishInformation().getNotificationUrl())
+          .role(questionRegisterNotification.getWhoToNotify().getRole().getRole())
+          .build();
+    }
+
+    public static class SSENotificationBuilder extends NotificationInformationBuilder {
+      @Override
+      public SSENotification build() {
+        return new SSENotification(userId, content, redirectUrl, role);
       }
     }
   }
