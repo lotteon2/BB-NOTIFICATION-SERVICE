@@ -2,7 +2,6 @@ package kr.bb.notification.domain.notification.application;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
-import bloomingblooms.domain.notification.QuestionRegisterNotification;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
@@ -30,26 +29,17 @@ public class NotificationCommandService {
     notificationJpaRepository.save(notification);
   }
 
-  public void saveQuestionRegister(
-      NotificationData<QuestionRegisterNotification> questionRegisterNotification) {
-    Notification notification =
-        NotificationCommand.toEntity(questionRegisterNotification.getPublishInformation());
+  public void saveManagerNotification(
+      PublishNotificationInformation publishNotificationInformation, Long storeId) {
+    Notification notification = NotificationCommand.toEntity(publishNotificationInformation);
     MemberNotification memberNotification =
-        MemberNotificationCommand.toEntity(questionRegisterNotification.getWhoToNotify());
+        MemberNotificationCommand.toEntity(storeId, Role.MANAGER);
     notification.setMemberNotifications(List.of(memberNotification));
     notificationJpaRepository.save(notification);
   }
 
-  public void saveNewcomerNotification(NotificationData<Void> newcomerNotification) {
-    Notification notification =
-        NotificationCommand.toEntity(newcomerNotification.getPublishInformation());
-    MemberNotification entityForAdmin = MemberNotificationCommand.toEntityForAdmin();
-    notification.setMemberNotifications(List.of(entityForAdmin));
-    notificationJpaRepository.save(notification);
-  }
-
   public void saveNewcomerNotification(
-      PublishNotificationInformation publishInformation, long userId) {
+      PublishNotificationInformation publishInformation, Long userId) {
     Notification entity = NotificationCommand.toEntity(publishInformation);
     MemberNotification memberNotification = MemberNotificationCommand.toEntity(userId, Role.ADMIN);
     entity.setMemberNotifications(List.of(memberNotification));

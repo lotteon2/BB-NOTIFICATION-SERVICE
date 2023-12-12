@@ -18,4 +18,14 @@ public class SSERestController {
   public SseEmitter subscribeManager(@PathVariable Long userId) {
     return sseService.subscribe(userId, "admin");
   }
+
+  @GetMapping(value = "subscribe/admin/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter subscribeAdmin(@PathVariable Long userId) {
+    return sseService.subscribe(userId, "admin");
+  }
+
+  @GetMapping(value = "subscribe/customer/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter subscribe(@PathVariable Long userId) {
+    return sseService.subscribe(userId, "customer");
+  }
 }

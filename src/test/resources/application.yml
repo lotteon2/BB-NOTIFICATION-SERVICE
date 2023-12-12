@@ -46,6 +46,9 @@ cloud:
       question-register-notification-queue:
         name: ""
         url: ""
+      new-order-queue:
+        name: ""
+        url: ""
       newcomer-queue:
         name: ""
         url: ""

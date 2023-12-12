@@ -1,15 +1,15 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
-import bloomingblooms.domain.notification.QuestionRegisterNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.QuestionRegister;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.serialization.VoidDeserializer;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
@@ -46,18 +46,36 @@ public class NotificationSQSListener {
   public void consumeQuestionRegisterNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<QuestionRegisterNotification> questionRegisterNotification =
+    NotificationData<QuestionRegister> questionRegisterNotification =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
-                .constructParametricType(
-                    NotificationData.class, QuestionRegisterNotification.class));
+                .constructParametricType(NotificationData.class, QuestionRegister.class));
     // call facade
     notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
     ack.acknowledge();
   }
-    @SqsListener(
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.new-order-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeNewOrderNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<NewOrderNotification> newOrderNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, NewOrderNotification.class));
+    // call facade
+    notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
+
+    ack.acknowledge();
+  }
+
+  @SqsListener(
       value = "${cloud.aws.sqs.newcomer-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeNewcomerQueue(
@@ -68,8 +86,7 @@ public class NotificationSQSListener {
             message,
             objectMapper
                 .getTypeFactory()
-                .constructParametricType(
-                    NotificationData.class, NewcomerNotification.class));
+                .constructParametricType(NotificationData.class, NewcomerNotification.class));
     // call facade
     notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
     ack.acknowledge();

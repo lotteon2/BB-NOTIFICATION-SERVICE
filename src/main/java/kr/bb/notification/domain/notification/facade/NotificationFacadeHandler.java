@@ -1,13 +1,12 @@
 package kr.bb.notification.domain.notification.facade;
 
 import bloomingblooms.domain.notification.NotificationData;
-import bloomingblooms.domain.notification.QuestionRegisterNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.SMSNotification;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.SSENotification;
-import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.QuestionRegister;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
@@ -20,30 +19,47 @@ public class NotificationFacadeHandler {
   private final SendSSE sse;
   private final NotificationCommandService notificationCommandService;
 
-  public void publishResaleNotification(
-      NotificationData<ResaleNotificationList> restoreNotification) {
-    List<SMSNotification> data = SMSNotification.getResaleNotificationSMSData(restoreNotification);
-    data.forEach(sms::publishCustomer);
+  public void publishResaleNotification(NotificationData<ResaleNotificationList> notification) {
+    List<NotificationInformation> data =
+        NotificationInformation.getResaleNotificationData(notification);
+    data.forEach(
+        item -> {
+          sms.publishCustomer(item);
+          sse.publishCustomer(item);
+        });
 
     // save notification
-    notificationCommandService.saveResaleNotification(restoreNotification);
+    notificationCommandService.saveResaleNotification(notification);
   }
 
-  public void publishQuestionRegisterNotification(
-      NotificationData<QuestionRegisterNotification> questionRegisterNotification) {
-    SSENotification sseNotification =
-        SSENotification.getQuestionRegisterSSEData(questionRegisterNotification);
+  public void publishQuestionRegisterNotification(NotificationData<QuestionRegister> notification) {
+    NotificationInformation sseNotification =
+        NotificationInformation.getSSEToManager(
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseNotification);
 
     // save notification
-    notificationCommandService.saveQuestionRegister(questionRegisterNotification);
+    notificationCommandService.saveManagerNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 
-  public void publishNewComerNotification(NotificationData<Void> newcomerNotification) {
-   SSENotification sseNotification = SSENotification.getNewComerSSEData(newcomerNotification);
-   sse.publishCustomer(sseNotification);
+  public void publishNewComerNotification(NotificationData<Void> notification) {
+    NotificationInformation sseNotification =
+        NotificationInformation.getNewComerSSEData(notification.getPublishInformation(), 1L);
+    sse.publishCustomer(sseNotification);
 
-   // save notification
-    notificationCommandService.saveNewcomerNotification(newcomerNotification.getPublishInformation(), 1L);
+    // save notification
+    notificationCommandService.saveNewcomerNotification(notification.getPublishInformation(), 1L);
+  }
+
+  public void publishNewOrderNotification(NotificationData<NewOrderNotification> notification) {
+    NotificationInformation sseNotification =
+        NotificationInformation.getSSEToManager(
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseNotification);
+
+    // save notification
+    notificationCommandService.saveManagerNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 }
