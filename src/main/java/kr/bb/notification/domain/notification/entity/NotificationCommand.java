@@ -169,7 +169,7 @@ public class NotificationCommand {
                   newcomerNotification.getPublishInformation().getNotificationUrl()))
           .role(Role.ADMIN.getRole())
           .redirectUrl(newcomerNotification.getPublishInformation().getNotificationUrl())
-          .id(100L)
+          .id(1L)
           .build();
     }
 

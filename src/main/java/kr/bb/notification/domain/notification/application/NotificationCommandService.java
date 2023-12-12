@@ -1,7 +1,9 @@
 package kr.bb.notification.domain.notification.application;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.QuestionRegisterNotification;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -44,5 +46,13 @@ public class NotificationCommandService {
     MemberNotification entityForAdmin = MemberNotificationCommand.toEntityForAdmin();
     notification.setMemberNotifications(List.of(entityForAdmin));
     notificationJpaRepository.save(notification);
+  }
+
+  public void saveNewcomerNotification(
+      PublishNotificationInformation publishInformation, long userId) {
+    Notification entity = NotificationCommand.toEntity(publishInformation);
+    MemberNotification memberNotification = MemberNotificationCommand.toEntity(userId, Role.ADMIN);
+    entity.setMemberNotifications(List.of(memberNotification));
+    notificationJpaRepository.save(entity);
   }
 }

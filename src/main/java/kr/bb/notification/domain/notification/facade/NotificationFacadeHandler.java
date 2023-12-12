@@ -44,6 +44,6 @@ public class NotificationFacadeHandler {
    sse.publishCustomer(sseNotification);
 
    // save notification
-    notificationCommandService.saveNewcomerNotification(newcomerNotification);
+    notificationCommandService.saveNewcomerNotification(newcomerNotification.getPublishInformation(), 1L);
   }
 }

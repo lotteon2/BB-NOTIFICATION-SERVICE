@@ -29,15 +29,10 @@ public class SseService {
 
   private void sendToClient(SSENotification event) {
     String id = event.getRole() + event.getId();
-    String data = event.getContent() + "\n" + event.getRedirectUrl();
     SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole());
     if (emitter != null) {
       try {
-        emitter.send(
-            SseEmitter.event()
-                .id(id)
-                .name(NotificationKind.QUESTION.getKind())
-                .data(data, MediaType.TEXT_EVENT_STREAM));
+        emitter.send(SseEmitter.event().id(id).name(NotificationKind.QUESTION.getKind()));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

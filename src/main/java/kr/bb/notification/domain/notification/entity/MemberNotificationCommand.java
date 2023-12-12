@@ -21,4 +21,8 @@ public class MemberNotificationCommand {
   public static MemberNotification toEntityForAdmin() {
     return MemberNotification.builder().userId(100L).role(Role.ADMIN).build();
   }
+
+  public static MemberNotification toEntity(long userId, Role role) {
+    return MemberNotification.builder().role(role).userId(userId).build();
+  }
 }
