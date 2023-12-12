@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
+import kr.bb.notification.domain.notification.infrastructure.dto.DeliveryNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.QuestionRegister;
@@ -94,6 +95,24 @@ public class NotificationSQSListener {
     newcomerNotification.getPublishInformation().setRole(Role.ADMIN);
     // call facade
     notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.delivery-start-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeDeliveryStartNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<DeliveryNotification> deliveryNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, DeliveryNotification.class));
+    deliveryNotification.getPublishInformation().setRole(Role.CUSTOMER);
+    // call facade
+    notificationFacadeHandler.publishDeliveryStartNotification(deliveryNotification);
     ack.acknowledge();
   }
 }

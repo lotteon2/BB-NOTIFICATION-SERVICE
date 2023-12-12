@@ -5,13 +5,15 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.DeliveryNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.QuestionRegister;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class NotificationFacadeHandler {
@@ -39,7 +41,7 @@ public class NotificationFacadeHandler {
     sse.publishCustomer(sseNotification);
 
     // save notification
-    notificationCommandService.saveManagerNotification(
+    notificationCommandService.saveSingleNotification(
         notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 
@@ -49,7 +51,7 @@ public class NotificationFacadeHandler {
     sse.publishCustomer(sseNotification);
 
     // save notification
-    notificationCommandService.saveNewcomerNotification(notification.getPublishInformation(), 1L);
+    notificationCommandService.saveSingleNotification(notification.getPublishInformation(), 1L);
   }
 
   public void publishNewOrderNotification(NotificationData<NewOrderNotification> notification) {
@@ -59,7 +61,20 @@ public class NotificationFacadeHandler {
     sse.publishCustomer(sseNotification);
 
     // save notification
-    notificationCommandService.saveManagerNotification(
+    notificationCommandService.saveSingleNotification(
         notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+  }
+
+  public void publishDeliveryStartNotification(
+      NotificationData<DeliveryNotification> notificationData) {
+
+    NotificationInformation notifyData =
+        NotificationInformation.getDeliveryNotificationData(notificationData);
+    sse.publishCustomer(notifyData);
+//    sms.publishCustomer(notifyData);
+
+    // save notification
+    notificationCommandService.saveSingleNotification(
+        notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
   }
 }
