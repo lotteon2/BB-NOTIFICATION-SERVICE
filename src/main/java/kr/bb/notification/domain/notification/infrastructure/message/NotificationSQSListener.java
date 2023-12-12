@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -53,6 +54,23 @@ public class NotificationSQSListener {
                     NotificationData.class, QuestionRegisterNotification.class));
     // call facade
     notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.new-order-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeNewOrderNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<NewOrderNotification> newOrderNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, NewOrderNotification.class));
+    // call facade
+    notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
     ack.acknowledge();
   }
 }
