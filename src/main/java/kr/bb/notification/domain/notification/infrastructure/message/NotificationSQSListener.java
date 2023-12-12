@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +36,7 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, ResaleNotificationList.class));
+    restoreNotification.getPublishInformation().setRole(Role.CUSTOMER);
     // call facade
     notificationFacadeHandler.publishResaleNotification(restoreNotification);
     ack.acknowledge();
@@ -52,6 +54,7 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, QuestionRegister.class));
+    questionRegisterNotification.getPublishInformation().setRole(Role.MANAGER);
     // call facade
     notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
     ack.acknowledge();
@@ -69,6 +72,7 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewOrderNotification.class));
+    newOrderNotification.getPublishInformation().setRole(Role.MANAGER);
     // call facade
     notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
 
@@ -87,6 +91,7 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewcomerNotification.class));
+    newcomerNotification.getPublishInformation().setRole(Role.ADMIN);
     // call facade
     notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
     ack.acknowledge();

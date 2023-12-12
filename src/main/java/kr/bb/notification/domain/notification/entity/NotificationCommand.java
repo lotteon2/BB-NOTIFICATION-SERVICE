@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.entity;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.NotificationKind;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class NotificationCommand {
   public static Notification toEntity(PublishNotificationInformation message) {
     return Notification.builder()
-        .notificationContent(message.getNotificationKind().getKind())
+        .notificationContent(message.getNotificationKind().getMessage())
         .notificationLink(message.getNotificationUrl())
         .build();
   }
@@ -79,6 +80,7 @@ public class NotificationCommand {
     private String redirectUrl;
     private String phoneNumber;
     private Role role;
+    private NotificationKind notificationKind;
 
     public static List<NotificationInformation> getResaleNotificationData(
         NotificationData<ResaleNotificationList> restoreNotification) {
@@ -91,30 +93,24 @@ public class NotificationCommand {
                           restoreNotification
                               .getPublishInformation()
                               .getNotificationKind()
-                              .getKind())
+                              .getMessage())
                       .phoneNumber(item.getPhoneNumber())
-                      .role(Role.CUSTOMER)
+                      .role(restoreNotification.getRole())
+                      .notificationKind(
+                          restoreNotification.getPublishInformation().getNotificationKind())
                       .redirectUrl(restoreNotification.getPublishInformation().getNotificationUrl())
                       .build())
           .collect(Collectors.toList());
     }
 
-    public static NotificationInformation getNewComerSSEData(
-        PublishNotificationInformation publishNotificationInformation, Long adminId) {
+    public static NotificationInformation getSSEData(
+        PublishNotificationInformation publishNotificationInformation, Long id) {
       return NotificationInformation.builder()
-          .role(Role.ADMIN)
+          .id(id)
+          .role(publishNotificationInformation.getRole())
+          .notificationKind(publishNotificationInformation.getNotificationKind())
           .redirectUrl(publishNotificationInformation.getNotificationUrl())
-          .id(adminId)
-          .build();
-    }
-
-    public static NotificationInformation getSSEToManager(
-        PublishNotificationInformation publishNotificationInformation, Long storeId) {
-      return NotificationInformation.builder()
-          .id(storeId)
-          .role(Role.MANAGER)
-          .redirectUrl(publishNotificationInformation.getNotificationUrl())
-          .content(publishNotificationInformation.getNotificationKind().getKind())
+          .content(publishNotificationInformation.getNotificationKind().getMessage())
           .build();
     }
   }

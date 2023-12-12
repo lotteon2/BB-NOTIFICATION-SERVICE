@@ -20,29 +20,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationCommandService {
   private final NotificationJpaRepository notificationJpaRepository;
 
+  private Notification getNotification(
+      PublishNotificationInformation publishInformation, Long id, Role role) {
+    Notification notification = NotificationCommand.toEntity(publishInformation);
+    MemberNotification memberNotification = MemberNotificationCommand.toEntity(id, role);
+    notification.getMemberNotifications().add(memberNotification);
+    return notification;
+  }
+
   public void saveResaleNotification(NotificationData<ResaleNotificationList> restoreNotification) {
     Notification notification =
         NotificationCommand.toEntity(restoreNotification.getPublishInformation());
     List<MemberNotification> memberNotifications =
         MemberNotificationCommand.toEntityList(restoreNotification.getWhoToNotify());
-    notification.setMemberNotifications(memberNotifications);
+    notification.getMemberNotifications().addAll(memberNotifications);
     notificationJpaRepository.save(notification);
   }
 
   public void saveManagerNotification(
-      PublishNotificationInformation publishNotificationInformation, Long storeId) {
-    Notification notification = NotificationCommand.toEntity(publishNotificationInformation);
-    MemberNotification memberNotification =
-        MemberNotificationCommand.toEntity(storeId, Role.MANAGER);
-    notification.setMemberNotifications(List.of(memberNotification));
-    notificationJpaRepository.save(notification);
+      PublishNotificationInformation publishNotificationInformation, Long id) {
+    notificationJpaRepository.save(
+        getNotification(publishNotificationInformation, id, Role.MANAGER));
   }
 
-  public void saveNewcomerNotification(
-      PublishNotificationInformation publishInformation, Long userId) {
-    Notification entity = NotificationCommand.toEntity(publishInformation);
-    MemberNotification memberNotification = MemberNotificationCommand.toEntity(userId, Role.ADMIN);
-    entity.setMemberNotifications(List.of(memberNotification));
-    notificationJpaRepository.save(entity);
+  public void saveNewcomerNotification(PublishNotificationInformation publishInformation, Long id) {
+    notificationJpaRepository.save(getNotification(publishInformation, id, Role.ADMIN));
   }
 }

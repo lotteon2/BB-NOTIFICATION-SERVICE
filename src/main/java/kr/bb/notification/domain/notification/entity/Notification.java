@@ -1,8 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -14,13 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.RedirectUrl;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @Builder
@@ -47,14 +43,6 @@ public class Notification {
       orphanRemoval = true)
   @Builder.Default
   private List<MemberNotification> memberNotifications = new ArrayList<>();
-
-  public static Notification getNotification(ResaleNotificationList item) {
-    return Notification.builder()
-        .notificationLink(
-            String.format(RedirectUrl.PRODUCT_DETAIL.getRedirectUrl(), item.getProductId()))
-        .notificationContent(item.getMessage())
-        .build();
-  }
 
   public void setMemberNotifications(List<MemberNotification> memberNotifications) {
     this.memberNotifications = memberNotifications;

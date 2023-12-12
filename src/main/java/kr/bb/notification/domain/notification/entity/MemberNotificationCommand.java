@@ -14,7 +14,7 @@ public class MemberNotificationCommand {
         .collect(Collectors.toList());
   }
 
-  public static MemberNotification toEntity(Long storeId, Role role) {
-    return MemberNotification.builder().userId(storeId).role(role).build();
+  public static MemberNotification toEntity(Long id, Role role) {
+    return MemberNotification.builder().userId(id).role(role).build();
   }
 }

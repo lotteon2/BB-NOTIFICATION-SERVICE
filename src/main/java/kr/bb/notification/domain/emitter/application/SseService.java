@@ -1,6 +1,5 @@
 package kr.bb.notification.domain.emitter.application;
 
-import bloomingblooms.domain.notification.NotificationKind;
 import java.io.IOException;
 import kr.bb.notification.domain.emitter.repository.SSERepository;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
@@ -27,11 +26,11 @@ public class SseService {
   }
 
   private void sendToClient(NotificationInformation event) {
-    String id = String.valueOf(event.getRole()) + event.getId();
-    SseEmitter emitter = emitterRepository.get(event.getId(), String.valueOf(event.getRole()));
+    String id = event.getRole().getRole() + event.getId();
+    SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole().getRole());
     if (emitter != null) {
       try {
-        emitter.send(SseEmitter.event().id(id).name(String.valueOf(NotificationKind.QUESTION)));
+        emitter.send(SseEmitter.event().id(id).name(String.valueOf(event.getNotificationKind())));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

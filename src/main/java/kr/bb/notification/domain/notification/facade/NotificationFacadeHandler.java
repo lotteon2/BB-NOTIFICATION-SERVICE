@@ -34,7 +34,7 @@ public class NotificationFacadeHandler {
 
   public void publishQuestionRegisterNotification(NotificationData<QuestionRegister> notification) {
     NotificationInformation sseNotification =
-        NotificationInformation.getSSEToManager(
+        NotificationInformation.getSSEData(
             notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseNotification);
 
@@ -45,7 +45,7 @@ public class NotificationFacadeHandler {
 
   public void publishNewComerNotification(NotificationData<Void> notification) {
     NotificationInformation sseNotification =
-        NotificationInformation.getNewComerSSEData(notification.getPublishInformation(), 1L);
+        NotificationInformation.getSSEData(notification.getPublishInformation(), 1L);
     sse.publishCustomer(sseNotification);
 
     // save notification
@@ -54,7 +54,7 @@ public class NotificationFacadeHandler {
 
   public void publishNewOrderNotification(NotificationData<NewOrderNotification> notification) {
     NotificationInformation sseNotification =
-        NotificationInformation.getSSEToManager(
+        NotificationInformation.getSSEData(
             notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseNotification);
 
