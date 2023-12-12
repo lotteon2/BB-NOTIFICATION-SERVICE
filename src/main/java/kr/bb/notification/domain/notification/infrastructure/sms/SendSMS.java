@@ -3,7 +3,7 @@ package kr.bb.notification.domain.notification.infrastructure.sms;
 import java.util.HashMap;
 import java.util.Map;
 import kr.bb.notification.config.AWSConfiguration;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.SMSNotification;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.action.InfrastructureActionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,10 @@ import software.amazon.awssdk.services.sns.model.SnsException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
+public class SendSMS implements InfrastructureActionHandler<NotificationInformation> {
   private final AWSConfiguration awsConfiguration;
 
-  private static PublishRequest makePublishRequest(SMSNotification notifyData) {
+  private static PublishRequest makePublishRequest(NotificationInformation notifyData) {
     return PublishRequest.builder()
         .message(notifyData.getContent() + "\n" + notifyData.getRedirectUrl())
         .phoneNumber(notifyData.getPhoneNumber())
@@ -36,7 +36,7 @@ public class SendSMS implements InfrastructureActionHandler<SMSNotification> {
   }
 
   @Override
-  public void publishCustomer(SMSNotification notifyData) {
+  public void publishCustomer(NotificationInformation notifyData) {
     SnsClient snsClient = awsConfiguration.snsClient();
     try {
       setSMSAttribute(snsClient);

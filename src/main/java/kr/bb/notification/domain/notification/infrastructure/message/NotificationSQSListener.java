@@ -1,13 +1,15 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
-import bloomingblooms.domain.notification.QuestionRegisterNotification;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.QuestionRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -34,6 +36,7 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, ResaleNotificationList.class));
+    restoreNotification.getPublishInformation().setRole(Role.CUSTOMER);
     // call facade
     notificationFacadeHandler.publishResaleNotification(restoreNotification);
     ack.acknowledge();
@@ -45,13 +48,13 @@ public class NotificationSQSListener {
   public void consumeQuestionRegisterNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<QuestionRegisterNotification> questionRegisterNotification =
+    NotificationData<QuestionRegister> questionRegisterNotification =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
-                .constructParametricType(
-                    NotificationData.class, QuestionRegisterNotification.class));
+                .constructParametricType(NotificationData.class, QuestionRegister.class));
+    questionRegisterNotification.getPublishInformation().setRole(Role.MANAGER);
     // call facade
     notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
     ack.acknowledge();
@@ -69,8 +72,28 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewOrderNotification.class));
+    newOrderNotification.getPublishInformation().setRole(Role.MANAGER);
     // call facade
     notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
+
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.newcomer-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeNewcomerQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<Void> newcomerNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, NewcomerNotification.class));
+    newcomerNotification.getPublishInformation().setRole(Role.ADMIN);
+    // call facade
+    notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
     ack.acknowledge();
   }
 }

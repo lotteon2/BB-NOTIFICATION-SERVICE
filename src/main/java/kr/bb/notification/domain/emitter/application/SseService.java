@@ -1,12 +1,10 @@
 package kr.bb.notification.domain.emitter.application;
 
-import bloomingblooms.domain.notification.NotificationKind;
 import java.io.IOException;
 import kr.bb.notification.domain.emitter.repository.SSERepository;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.SSENotification;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -23,21 +21,16 @@ public class SseService {
     return emitter;
   }
 
-  public void notify(SSENotification event) {
+  public void notify(NotificationInformation event) {
     sendToClient(event);
   }
 
-  private void sendToClient(SSENotification event) {
-    String id = event.getRole() + event.getUserId();
-    String data = event.getContent() + "\n" + event.getRedirectUrl();
-    SseEmitter emitter = emitterRepository.get(event.getUserId(), event.getRole());
+  private void sendToClient(NotificationInformation event) {
+    String id = event.getRole().getRole() + event.getId();
+    SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole().getRole());
     if (emitter != null) {
       try {
-        emitter.send(
-            SseEmitter.event()
-                .id(id)
-                .name(NotificationKind.QUESTION.getKind())
-                .data(data, MediaType.TEXT_EVENT_STREAM));
+        emitter.send(SseEmitter.event().id(id).name(String.valueOf(event.getNotificationKind())));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

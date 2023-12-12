@@ -16,7 +16,7 @@ public class SSERestController {
   // TODO: 화면 테스트용으로 pathvariable 사용
   @GetMapping(value = "subscribe/manager/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribeManager(@PathVariable Long userId) {
-    return sseService.subscribe(userId, "manager");
+    return sseService.subscribe(userId, "admin");
   }
 
   @GetMapping(value = "subscribe/admin/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

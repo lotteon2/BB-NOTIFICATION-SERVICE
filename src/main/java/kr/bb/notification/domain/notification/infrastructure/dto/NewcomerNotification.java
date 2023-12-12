@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class NewOrderNotification {
-  private Long storeId;
-  private OrderType orderType;
+public class NewcomerNotification {
+  private Long userId;
 }

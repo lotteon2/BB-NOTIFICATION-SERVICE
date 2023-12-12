@@ -49,3 +49,6 @@ cloud:
       new-order-queue:
         name: ""
         url: ""
+      newcomer-queue:
+        name: ""
+        url: ""

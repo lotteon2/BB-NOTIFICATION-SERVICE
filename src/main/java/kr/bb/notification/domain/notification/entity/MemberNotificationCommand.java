@@ -1,6 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
-import bloomingblooms.domain.notification.QuestionRegisterNotification;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +14,7 @@ public class MemberNotificationCommand {
         .collect(Collectors.toList());
   }
 
-  public static MemberNotification toEntity(QuestionRegisterNotification whoToNotify) {
-    return MemberNotification.builder().userId(whoToNotify.getUserId()).build();
-  }
-
-  public static MemberNotification toEntityForStoreManager(NewOrderNotification whoToNotify) {
-    return MemberNotification.builder().userId(whoToNotify.getStoreId()).build();
+  public static MemberNotification toEntity(Long id, Role role) {
+    return MemberNotification.builder().userId(id).role(role).build();
   }
 }
