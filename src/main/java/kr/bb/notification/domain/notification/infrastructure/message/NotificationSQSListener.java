@@ -6,7 +6,7 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
-import kr.bb.notification.domain.notification.facade.NotificationFacadeHandler;
+import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
 import kr.bb.notification.domain.notification.infrastructure.dto.DeliveryNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewOrderNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationSQSListener {
   private final ObjectMapper objectMapper;
-  private final NotificationFacadeHandler notificationFacadeHandler;
+  private final NotificationActionHelper notificationFacadeHandler;
 
   @SqsListener(
       value = "${cloud.aws.sqs.product-resale-notification-queue.name}",

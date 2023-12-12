@@ -1,4 +1,4 @@
-package kr.bb.notification.domain.notification.facade;
+package kr.bb.notification.domain.notification.helper;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.resale.ResaleNotificationList;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NotificationFacadeHandler {
+public class NotificationActionHelper {
   private final SendSMS sms;
   private final SendSSE sse;
   private final NotificationCommandService notificationCommandService;

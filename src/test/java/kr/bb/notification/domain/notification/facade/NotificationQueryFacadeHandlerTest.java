@@ -1,7 +1,6 @@
 package kr.bb.notification.domain.notification.facade;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +8,7 @@ import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.Notification;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationList;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.UnreadNotificationCount;
+import kr.bb.notification.domain.notification.helper.NotificationQueryActionHelper;
 import kr.bb.notification.domain.notification.repository.NotificationJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class NotificationQueryFacadeHandlerTest {
 
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired NotificationJpaRepository notificationJpaRepository;
-  @Autowired private NotificationQueryFacadeHandler notificationQueryFacadeHandler;
+  @Autowired private NotificationQueryActionHelper notificationQueryFacadeHandler;
 
 
 
