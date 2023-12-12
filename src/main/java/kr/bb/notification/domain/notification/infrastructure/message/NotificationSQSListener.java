@@ -25,6 +25,14 @@ public class NotificationSQSListener {
   private final ObjectMapper objectMapper;
   private final NotificationActionHelper notificationFacadeHandler;
 
+  /**
+   * 상품 재입고 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.product-resale-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -43,6 +51,14 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 문의 등록 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.question-register-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -61,12 +77,21 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 신규 주문 알림 배송 | 픽업 | 구독
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.new-order-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeNewOrderNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
+    // TODO: 주문 완료 후 타입 정의해서 보내주기 kind
     NotificationData<NewOrderNotification> newOrderNotification =
         objectMapper.readValue(
             message,
@@ -80,6 +105,14 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 신규 회원 가입 심사 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.newcomer-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -98,6 +131,14 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 배송 시작 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.delivery-start-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
