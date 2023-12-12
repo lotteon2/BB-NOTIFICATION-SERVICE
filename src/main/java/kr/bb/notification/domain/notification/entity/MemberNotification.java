@@ -1,6 +1,6 @@
 package kr.bb.notification.domain.notification.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @Builder
@@ -38,6 +37,9 @@ public class MemberNotification extends BaseEntity {
 
   @Column(name = "user_id")
   private Long userId;
+
+  @Column(name = "role")
+  private Role role;
 
   @Builder.Default
   @Column(name = "is_read")

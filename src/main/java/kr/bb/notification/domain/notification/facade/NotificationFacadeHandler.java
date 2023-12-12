@@ -7,6 +7,7 @@ import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.SMSNotification;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.SSENotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.NewcomerNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,13 @@ public class NotificationFacadeHandler {
 
     // save notification
     notificationCommandService.saveQuestionRegister(questionRegisterNotification);
+  }
+
+  public void publishNewComerNotification(NotificationData<Void> newcomerNotification) {
+   SSENotification sseNotification = SSENotification.getNewComerSSEData(newcomerNotification);
+   sse.publishCustomer(sseNotification);
+
+   // save notification
+    notificationCommandService.saveNewcomerNotification(newcomerNotification);
   }
 }

@@ -3,6 +3,7 @@ package kr.bb.notification.domain.notification.entity;
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.QuestionRegisterNotification;
+import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,13 +69,13 @@ public class NotificationCommand {
 
   @Getter
   public static class NotificationInformation {
-    private final Long userId;
+    private final Long id;
     private final String content;
     private final String redirectUrl;
 
     @Builder(builderMethodName = "parentBuilder")
-    protected NotificationInformation(Long userId, String content, String redirectUrl) {
-      this.userId = userId;
+    protected NotificationInformation(Long id, String content, String redirectUrl) {
+      this.id = id;
       this.content = content;
       this.redirectUrl = redirectUrl;
     }
@@ -137,8 +138,8 @@ public class NotificationCommand {
     private final String role;
 
     @Builder
-    public SSENotification(Long userId, String content, String redirectUrl, String role) {
-      super(userId, content, redirectUrl);
+    public SSENotification(Long id, String content, String redirectUrl, String role) {
+      super(id, content, redirectUrl);
       this.role = role;
     }
 
@@ -158,10 +159,24 @@ public class NotificationCommand {
           .build();
     }
 
+    public static SSENotification getNewComerSSEData(
+        NotificationData<Void> newcomerNotification) {
+      return SSENotification.builder()
+          .content(
+              NotificationTemplate.setContent(
+                  newcomerNotification.getPublishInformation().getNotificationKind().getKind(),
+                  newcomerNotification.getPublishInformation().getMessage(),
+                  newcomerNotification.getPublishInformation().getNotificationUrl()))
+          .role(Role.ADMIN.getRole())
+          .redirectUrl(newcomerNotification.getPublishInformation().getNotificationUrl())
+          .id(100L)
+          .build();
+    }
+
     public static class SSENotificationBuilder extends NotificationInformationBuilder {
       @Override
       public SSENotification build() {
-        return new SSENotification(userId, content, redirectUrl, role);
+        return new SSENotification(id, content, redirectUrl, role);
       }
     }
   }

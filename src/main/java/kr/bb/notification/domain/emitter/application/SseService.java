@@ -28,9 +28,9 @@ public class SseService {
   }
 
   private void sendToClient(SSENotification event) {
-    String id = event.getRole() + event.getUserId();
+    String id = event.getRole() + event.getId();
     String data = event.getContent() + "\n" + event.getRedirectUrl();
-    SseEmitter emitter = emitterRepository.get(event.getUserId(), event.getRole());
+    SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole());
     if (emitter != null) {
       try {
         emitter.send(
