@@ -2,7 +2,6 @@ package kr.bb.notification.domain.notification.application;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
-import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -20,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationCommandService {
   private final NotificationJpaRepository notificationJpaRepository;
 
-  private Notification getNotification(
-      PublishNotificationInformation publishInformation, Long id, Role role) {
+  private Notification getNotification(PublishNotificationInformation publishInformation, Long id) {
     Notification notification = NotificationCommand.toEntity(publishInformation);
-    MemberNotification memberNotification = MemberNotificationCommand.toEntity(id, role);
-    notification.getMemberNotifications().add(memberNotification);
+    MemberNotification memberNotification =
+        MemberNotificationCommand.toEntity(id, publishInformation.getRole(), notification);
+    notification.setMemberNotifications(List.of(memberNotification));
     return notification;
   }
 
@@ -32,18 +31,13 @@ public class NotificationCommandService {
     Notification notification =
         NotificationCommand.toEntity(restoreNotification.getPublishInformation());
     List<MemberNotification> memberNotifications =
-        MemberNotificationCommand.toEntityList(restoreNotification.getWhoToNotify());
+        MemberNotificationCommand.toEntityList(restoreNotification.getWhoToNotify(), notification);
     notification.getMemberNotifications().addAll(memberNotifications);
     notificationJpaRepository.save(notification);
   }
 
-  public void saveManagerNotification(
-      PublishNotificationInformation publishNotificationInformation, Long id) {
-    notificationJpaRepository.save(
-        getNotification(publishNotificationInformation, id, Role.MANAGER));
-  }
-
-  public void saveNewcomerNotification(PublishNotificationInformation publishInformation, Long id) {
-    notificationJpaRepository.save(getNotification(publishInformation, id, Role.ADMIN));
+  public void saveSingleNotification(PublishNotificationInformation publishInformation, Long id) {
+    Notification notification = getNotification(publishInformation, id);
+    notificationJpaRepository.save(notification);
   }
 }

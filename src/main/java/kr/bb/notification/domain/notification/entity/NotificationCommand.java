@@ -4,6 +4,7 @@ import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.NotificationKind;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
+import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,7 +96,7 @@ public class NotificationCommand {
                               .getNotificationKind()
                               .getMessage())
                       .phoneNumber(item.getPhoneNumber())
-                      .role(restoreNotification.getRole())
+                      .role(restoreNotification.getPublishInformation().getRole())
                       .notificationKind(
                           restoreNotification.getPublishInformation().getNotificationKind())
                       .redirectUrl(restoreNotification.getPublishInformation().getNotificationUrl())
@@ -111,6 +112,18 @@ public class NotificationCommand {
           .notificationKind(publishNotificationInformation.getNotificationKind())
           .redirectUrl(publishNotificationInformation.getNotificationUrl())
           .content(publishNotificationInformation.getNotificationKind().getMessage())
+          .build();
+    }
+
+    public static NotificationInformation getDeliveryNotificationData(
+        NotificationData<DeliveryNotification> notificationData) {
+      return NotificationInformation.builder()
+          .role(notificationData.getPublishInformation().getRole())
+          .phoneNumber(notificationData.getWhoToNotify().getPhoneNumber())
+          .content(notificationData.getPublishInformation().getNotificationKind().getMessage())
+          .redirectUrl(notificationData.getPublishInformation().getNotificationUrl())
+          .id(notificationData.getWhoToNotify().getUserId())
+          .notificationKind(notificationData.getPublishInformation().getNotificationKind())
           .build();
     }
   }

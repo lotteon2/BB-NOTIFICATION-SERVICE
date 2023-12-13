@@ -52,3 +52,6 @@ cloud:
       newcomer-queue:
         name: ""
         url: ""
+      delivery-start-notification-queue:
+        name: ""
+        url: ""

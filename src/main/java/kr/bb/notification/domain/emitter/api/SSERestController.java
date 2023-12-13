@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.emitter.api;
 
+import bloomingblooms.domain.notification.Role;
 import kr.bb.notification.domain.emitter.application.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -16,16 +17,16 @@ public class SSERestController {
   // TODO: 화면 테스트용으로 pathvariable 사용
   @GetMapping(value = "subscribe/manager/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribeManager(@PathVariable Long userId) {
-    return sseService.subscribe(userId, "admin");
+    return sseService.subscribe(userId, Role.MANAGER.getRole());
   }
 
   @GetMapping(value = "subscribe/admin/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribeAdmin(@PathVariable Long userId) {
-    return sseService.subscribe(userId, "admin");
+    return sseService.subscribe(userId, Role.ADMIN.getRole());
   }
 
   @GetMapping(value = "subscribe/customer/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribe(@PathVariable Long userId) {
-    return sseService.subscribe(userId, "customer");
+    return sseService.subscribe(userId, Role.CUSTOMER.getRole());
   }
 }
