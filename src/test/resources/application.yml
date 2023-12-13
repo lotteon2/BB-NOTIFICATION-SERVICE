@@ -55,3 +55,6 @@ cloud:
       delivery-start-notification-queue:
         name: ""
         url: ""
+      order-cancel-notification-queue:
+        name: ""
+        url: ""

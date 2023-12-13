@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
+import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -154,6 +155,24 @@ public class NotificationSQSListener {
     deliveryNotification.getPublishInformation().setRole(Role.CUSTOMER);
     // call facade
     notificationFacadeHandler.publishDeliveryStartNotification(deliveryNotification);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.order-cancel-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeOrderCancelNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<OrderCancelNotification> orderCancelNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, OrderCancelNotification.class));
+    orderCancelNotification.getPublishInformation().setRole(Role.MANAGER);
+    // call facade
+    notificationFacadeHandler.publishOrderCancelNotification(orderCancelNotification);
     ack.acknowledge();
   }
 }
