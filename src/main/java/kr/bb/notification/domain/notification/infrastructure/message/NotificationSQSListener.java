@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
+import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -154,6 +155,24 @@ public class NotificationSQSListener {
     deliveryNotification.getPublishInformation().setRole(Role.CUSTOMER);
     // call facade
     notificationFacadeHandler.publishDeliveryStartNotification(deliveryNotification);
+    ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.settlement-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeSettlementNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<SettlementNotification> settlementNotification =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, SettlementNotification.class));
+    settlementNotification.getPublishInformation().setRole(Role.MANAGER);
+    // call facade
+    notificationFacadeHandler.publishSettlementNotification(settlementNotification);
     ack.acknowledge();
   }
 }

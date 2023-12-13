@@ -8,11 +8,13 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -76,5 +78,14 @@ public class NotificationActionHelper {
     // save notification
     notificationCommandService.saveSingleNotification(
         notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
+  }
+
+  public void publishSettlementNotification(NotificationData<SettlementNotification> notification) {
+    NotificationInformation sseData = NotificationInformation.getSSEData(
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 }
