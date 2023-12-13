@@ -8,11 +8,13 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -67,14 +69,26 @@ public class NotificationActionHelper {
 
   public void publishDeliveryStartNotification(
       NotificationData<DeliveryNotification> notificationData) {
-
     NotificationInformation notifyData =
         NotificationInformation.getDeliveryNotificationData(notificationData);
     sse.publishCustomer(notifyData);
-//    sms.publishCustomer(notifyData);
+    sms.publishCustomer(notifyData);
 
     // save notification
     notificationCommandService.saveSingleNotification(
         notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
+  }
+
+  public void publishOutOfStockNotification(
+      NotificationData<OutOfStockNotification> outOfStockNotification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            outOfStockNotification.getPublishInformation(),
+            outOfStockNotification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        outOfStockNotification.getPublishInformation(),
+        outOfStockNotification.getWhoToNotify().getStoreId());
   }
 }
