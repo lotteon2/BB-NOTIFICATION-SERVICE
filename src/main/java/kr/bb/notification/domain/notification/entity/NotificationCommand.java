@@ -4,10 +4,10 @@ import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.NotificationKind;
 import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
+import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kr.bb.notification.domain.notification.infrastructure.dto.DeliveryNotification;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -96,7 +96,7 @@ public class NotificationCommand {
                               .getNotificationKind()
                               .getMessage())
                       .phoneNumber(item.getPhoneNumber())
-                      .role(restoreNotification.getRole())
+                      .role(restoreNotification.getPublishInformation().getRole())
                       .notificationKind(
                           restoreNotification.getPublishInformation().getNotificationKind())
                       .redirectUrl(restoreNotification.getPublishInformation().getNotificationUrl())
