@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.notification.newcomer.NewcomerNotification;
@@ -46,9 +47,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, ResaleNotificationList.class));
-    restoreNotification.getPublishInformation().setRole(Role.CUSTOMER);
+    NotificationData<ResaleNotificationList> notification =
+        NotificationData.notifyData(
+            restoreNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                restoreNotification.getPublishInformation(), Role.CUSTOMER));
+
     // call facade
-    notificationFacadeHandler.publishResaleNotification(restoreNotification);
+    notificationFacadeHandler.publishResaleNotification(notification);
     ack.acknowledge();
   }
 
@@ -72,9 +78,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, QuestionRegister.class));
-    questionRegisterNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<QuestionRegister> notification =
+        NotificationData.notifyData(
+            questionRegisterNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                questionRegisterNotification.getPublishInformation(), Role.MANAGER));
+
     // call facade
-    notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
+    notificationFacadeHandler.publishQuestionRegisterNotification(notification);
     ack.acknowledge();
   }
 
@@ -99,9 +110,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewOrderNotification.class));
-    newOrderNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<NewOrderNotification> notification =
+        NotificationData.notifyData(
+            newOrderNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                newOrderNotification.getPublishInformation(), Role.MANAGER));
+
     // call facade
-    notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
+    notificationFacadeHandler.publishNewOrderNotification(notification);
 
     ack.acknowledge();
   }
@@ -120,15 +136,19 @@ public class NotificationSQSListener {
   public void consumeNewcomerQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<Void> newcomerNotification =
+    NotificationData<Void> newcomer =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewcomerNotification.class));
-    newcomerNotification.getPublishInformation().setRole(Role.ADMIN);
+    NotificationData<Void> information =
+        NotificationData.notifyData(
+            newcomer.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                newcomer.getPublishInformation(), Role.ADMIN));
     // call facade
-    notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
+    notificationFacadeHandler.publishNewComerNotification(information);
     ack.acknowledge();
   }
 
@@ -141,20 +161,24 @@ public class NotificationSQSListener {
    * @throws JsonProcessingException
    */
   @SqsListener(
-      value = "${cloud.aws.sqs.delivery-start-notification-queue.name}",
+      value = "${cloud.aws.sqs.delivery-status-update-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeDeliveryStartNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<DeliveryNotification> deliveryNotification =
+    NotificationData<DeliveryNotification> delivery =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, DeliveryNotification.class));
-    deliveryNotification.getPublishInformation().setRole(Role.CUSTOMER);
+    NotificationData<DeliveryNotification> notification =
+        NotificationData.notifyData(
+            delivery.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                delivery.getPublishInformation(), Role.CUSTOMER));
     // call facade
-    notificationFacadeHandler.publishDeliveryStartNotification(deliveryNotification);
+    notificationFacadeHandler.publishDeliveryStartNotification(notification);
     ack.acknowledge();
   }
 
@@ -164,15 +188,19 @@ public class NotificationSQSListener {
   public void consumeOrderCancelNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<OrderCancelNotification> orderCancelNotification =
+    NotificationData<OrderCancelNotification> orderCancel =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, OrderCancelNotification.class));
-    orderCancelNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<OrderCancelNotification> notification =
+        NotificationData.notifyData(
+            orderCancel.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                orderCancel.getPublishInformation(), Role.MANAGER));
     // call facade
-    notificationFacadeHandler.publishOrderCancelNotification(orderCancelNotification);
+    notificationFacadeHandler.publishOrderCancelNotification(notification);
     ack.acknowledge();
   }
 }

@@ -52,7 +52,7 @@ cloud:
       newcomer-queue:
         name: ""
         url: ""
-      delivery-start-notification-queue:
+      delivery-status-update-notification-queue:
         name: ""
         url: ""
       order-cancel-notification-queue:
