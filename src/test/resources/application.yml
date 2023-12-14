@@ -58,3 +58,6 @@ cloud:
       settlement-notification-queue:
         name: ""
         url: ""
+      order-cancel-notification-queue:
+        name: ""
+        url: ""

@@ -8,6 +8,7 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
@@ -68,20 +69,32 @@ public class NotificationActionHelper {
   }
 
   public void publishDeliveryStartNotification(
-      NotificationData<DeliveryNotification> notificationData) {
+      NotificationData<DeliveryNotification> notification) {
 
     NotificationInformation notifyData =
-        NotificationInformation.getDeliveryNotificationData(notificationData);
+        NotificationInformation.getDeliveryNotificationData(notification);
     sse.publishCustomer(notifyData);
-//    sms.publishCustomer(notifyData);
+    //    sms.publishCustomer(notifyData);
 
     // save notification
     notificationCommandService.saveSingleNotification(
-        notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
+        notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
   }
 
   public void publishSettlementNotification(NotificationData<SettlementNotification> notification) {
-    NotificationInformation sseData = NotificationInformation.getSSEData(
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+  }
+
+  public void publishOrderCancelNotification(
+      NotificationData<OrderCancelNotification> notification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
             notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseData);
 
