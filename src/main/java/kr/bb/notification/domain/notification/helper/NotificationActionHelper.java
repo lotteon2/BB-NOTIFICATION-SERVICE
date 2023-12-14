@@ -9,6 +9,7 @@ import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
@@ -69,19 +70,33 @@ public class NotificationActionHelper {
 
   public void publishDeliveryStartNotification(
       NotificationData<DeliveryNotification> notificationData) {
-
     NotificationInformation notifyData =
         NotificationInformation.getDeliveryNotificationData(notificationData);
     sse.publishCustomer(notifyData);
-//    sms.publishCustomer(notifyData);
+    sms.publishCustomer(notifyData);
 
     // save notification
     notificationCommandService.saveSingleNotification(
         notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
   }
 
-  public void publishOrderCancelNotification(NotificationData<OrderCancelNotification> notification) {
-    NotificationInformation sseData = NotificationInformation.getSSEData(
+  public void publishOutOfStockNotification(
+      NotificationData<OutOfStockNotification> outOfStockNotification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            outOfStockNotification.getPublishInformation(),
+            outOfStockNotification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        outOfStockNotification.getPublishInformation(),
+        outOfStockNotification.getWhoToNotify().getStoreId());
+  }
+
+  public void publishOrderCancelNotification(
+      NotificationData<OrderCancelNotification> notification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
             notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseData);
 
