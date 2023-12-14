@@ -10,6 +10,7 @@ import kr.bb.notification.domain.notification.application.NotificationCommandSer
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
@@ -68,17 +69,29 @@ public class NotificationActionHelper {
         notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 
-  public void publishDeliveryStartNotification(
-      NotificationData<DeliveryNotification> notification) {
+  public void publishOutOfStockNotification(
+      NotificationData<OutOfStockNotification> outOfStockNotification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            outOfStockNotification.getPublishInformation(),
+            outOfStockNotification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
 
+    notificationCommandService.saveSingleNotification(
+        outOfStockNotification.getPublishInformation(),
+        outOfStockNotification.getWhoToNotify().getStoreId());
+  }
+
+  public void publishDeliveryStartNotification(
+      NotificationData<DeliveryNotification> notificationData) {
     NotificationInformation notifyData =
-        NotificationInformation.getDeliveryNotificationData(notification);
+        NotificationInformation.getDeliveryNotificationData(notificationData);
     sse.publishCustomer(notifyData);
-    //    sms.publishCustomer(notifyData);
+    sms.publishCustomer(notifyData);
 
     // save notification
     notificationCommandService.saveSingleNotification(
-        notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
+        notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
   }
 
   public void publishSettlementNotification(NotificationData<SettlementNotification> notification) {
