@@ -9,6 +9,7 @@ import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
@@ -68,6 +69,19 @@ public class NotificationActionHelper {
         notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 
+  public void publishOutOfStockNotification(
+      NotificationData<OutOfStockNotification> outOfStockNotification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            outOfStockNotification.getPublishInformation(),
+            outOfStockNotification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        outOfStockNotification.getPublishInformation(),
+        outOfStockNotification.getWhoToNotify().getStoreId());
+  }
+
   public void publishDeliveryStartNotification(
       NotificationData<DeliveryNotification> notificationData) {
     NotificationInformation notifyData =
@@ -80,17 +94,14 @@ public class NotificationActionHelper {
         notificationData.getPublishInformation(), notificationData.getWhoToNotify().getUserId());
   }
 
-  public void publishOutOfStockNotification(
-      NotificationData<OutOfStockNotification> outOfStockNotification) {
+  public void publishSettlementNotification(NotificationData<SettlementNotification> notification) {
     NotificationInformation sseData =
         NotificationInformation.getSSEData(
-            outOfStockNotification.getPublishInformation(),
-            outOfStockNotification.getWhoToNotify().getStoreId());
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
     sse.publishCustomer(sseData);
 
     notificationCommandService.saveSingleNotification(
-        outOfStockNotification.getPublishInformation(),
-        outOfStockNotification.getWhoToNotify().getStoreId());
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 
   public void publishOrderCancelNotification(
