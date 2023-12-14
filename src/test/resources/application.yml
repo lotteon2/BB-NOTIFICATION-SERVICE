@@ -58,3 +58,6 @@ cloud:
       out-of-stock-notification-queue:
         name: ""
         url: ""
+      order-cancel-notification-queue:
+        name: ""
+        url: ""

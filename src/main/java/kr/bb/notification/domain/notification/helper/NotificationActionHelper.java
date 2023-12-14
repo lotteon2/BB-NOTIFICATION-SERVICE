@@ -8,6 +8,7 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
@@ -90,5 +91,16 @@ public class NotificationActionHelper {
     notificationCommandService.saveSingleNotification(
         outOfStockNotification.getPublishInformation(),
         outOfStockNotification.getWhoToNotify().getStoreId());
+  }
+
+  public void publishOrderCancelNotification(
+      NotificationData<OrderCancelNotification> notification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+    sse.publishCustomer(sseData);
+
+    notificationCommandService.saveSingleNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
   }
 }
