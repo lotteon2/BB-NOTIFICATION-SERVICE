@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.NotificationCommand;
 import kr.bb.notification.domain.notification.repository.MemberNotificationJpaRepository;
@@ -14,10 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationQueryService {
   private final MemberNotificationJpaRepository memberNotificationJpaRepository;
 
+  @Transactional
   public NotificationCommand.NotificationList getNotifications(Long userId) {
     List<MemberNotification> notifications =
         memberNotificationJpaRepository.findNotifications(userId);
-    return NotificationCommand.NotificationList.getData(notifications);
+    List<MemberNotification> notificationsIsRead =
+        notifications.stream().map(MemberNotification::updateIsRead).collect(Collectors.toList());
+    return NotificationCommand.NotificationList.getData(notificationsIsRead);
   }
 
   public Long getUnreadNotificationCount(Long userId) {
