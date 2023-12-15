@@ -8,6 +8,7 @@ import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.MemberNotificationCommand;
 import kr.bb.notification.domain.notification.entity.Notification;
 import kr.bb.notification.domain.notification.entity.NotificationCommand;
+import kr.bb.notification.domain.notification.repository.MemberNotificationJpaRepository;
 import kr.bb.notification.domain.notification.repository.NotificationJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class NotificationCommandService {
   }
 
   public void saveSingleNotification(PublishNotificationInformation publishInformation, Long id) {
-    notificationJpaRepository.save(getNotification(publishInformation, id));
+    Notification notification = getNotification(publishInformation, id);
+    notificationJpaRepository.save(notification);
   }
 }

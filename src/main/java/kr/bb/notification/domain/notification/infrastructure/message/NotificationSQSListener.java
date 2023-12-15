@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
@@ -180,6 +182,48 @@ public class NotificationSQSListener {
     // call facade
     notificationActionHelper.publishDeliveryStartNotification(notification);
     ack.acknowledge();
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.settlement-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeSettlementNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<SettlementNotification> settlement =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, SettlementNotification.class));
+    NotificationData<SettlementNotification> notification =
+        NotificationData.notifyData(
+            settlement.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                settlement.getPublishInformation(), Role.MANAGER));
+    // call facade
+    notificationActionHelper.publishSettlementNotification(notification);
+  }
+
+  @SqsListener(
+      value = "${cloud.aws.sqs.out-of-stock-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeOutOfStockNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<OutOfStockNotification> outOfStock =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, OutOfStockNotification.class));
+    NotificationData<OutOfStockNotification> notification =
+        NotificationData.notifyData(
+            outOfStock.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                outOfStock.getPublishInformation(), Role.MANAGER));
+    // call facade
+    notificationActionHelper.publishOutOfStockNotification(notification);
   }
 
   @SqsListener(

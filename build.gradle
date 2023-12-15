@@ -94,7 +94,7 @@ test {
                      "**/handler/**",
                      "**/common/**",
                      "**/api/**",
-                    "**/emitter/**"
+                     "**/emitter/**"
         ]
     }
     useJUnitPlatform()

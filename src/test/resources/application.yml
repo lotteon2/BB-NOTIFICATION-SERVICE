@@ -55,6 +55,12 @@ cloud:
       delivery-status-update-notification-queue:
         name: ""
         url: ""
+      settlement-notification-queue:
+        name: ""
+        url: ""
+      out-of-stock-notification-queue:
+        name: ""
+        url: ""
       order-cancel-notification-queue:
         name: ""
         url: ""
