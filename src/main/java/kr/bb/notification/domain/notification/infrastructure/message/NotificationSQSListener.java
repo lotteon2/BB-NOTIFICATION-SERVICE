@@ -184,6 +184,14 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 정산 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.settlement-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -205,6 +213,14 @@ public class NotificationSQSListener {
     notificationActionHelper.publishSettlementNotification(notification);
   }
 
+  /**
+   * 꽃 재고 부족 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.out-of-stock-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -226,6 +242,14 @@ public class NotificationSQSListener {
     notificationActionHelper.publishOutOfStockNotification(notification);
   }
 
+  /**
+   * 주문 취소 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.order-cancel-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
