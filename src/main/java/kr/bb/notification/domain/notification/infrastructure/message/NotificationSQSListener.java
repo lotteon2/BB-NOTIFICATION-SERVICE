@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
+import kr.bb.notification.domain.notification.infrastructure.dto.InqueryResponseNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
@@ -269,6 +270,28 @@ public class NotificationSQSListener {
                 orderCancel.getPublishInformation(), Role.MANAGER));
     // call facade
     notificationActionHelper.publishOrderCancelNotification(notification);
+    ack.acknowledge();
+  }
+
+    @SqsListener(
+      value = "${cloud.aws.sqs.inquery-response-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeInqueryResponseNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<InqueryResponseNotification> orderCancel =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, InqueryResponseNotification.class));
+    NotificationData<InqueryResponseNotification> notification =
+        NotificationData.notifyData(
+            orderCancel.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                orderCancel.getPublishInformation(), Role.MANAGER));
+    // call facade
+    notificationActionHelper.publishInqueryResponseNotification(notification);
     ack.acknowledge();
   }
 }
