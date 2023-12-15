@@ -37,7 +37,6 @@ public class NotificationCommandService {
   }
 
   public void saveSingleNotification(PublishNotificationInformation publishInformation, Long id) {
-    Notification notification = getNotification(publishInformation, id);
-    notificationJpaRepository.save(notification);
+    notificationJpaRepository.save(getNotification(publishInformation, id));
   }
 }

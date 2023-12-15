@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationSQSListener {
   private final ObjectMapper objectMapper;
-  private final NotificationActionHelper notificationFacadeHandler;
+  private final NotificationActionHelper notificationActionHelper;
 
   /**
    * 상품 재입고 알림
@@ -54,7 +54,7 @@ public class NotificationSQSListener {
                 restoreNotification.getPublishInformation(), Role.CUSTOMER));
 
     // call facade
-    notificationFacadeHandler.publishResaleNotification(notification);
+    notificationActionHelper.publishResaleNotification(notification);
     ack.acknowledge();
   }
 
@@ -85,7 +85,7 @@ public class NotificationSQSListener {
                 questionRegisterNotification.getPublishInformation(), Role.MANAGER));
 
     // call facade
-    notificationFacadeHandler.publishQuestionRegisterNotification(notification);
+    notificationActionHelper.publishQuestionRegisterNotification(notification);
     ack.acknowledge();
   }
 
@@ -117,7 +117,7 @@ public class NotificationSQSListener {
                 newOrderNotification.getPublishInformation(), Role.MANAGER));
 
     // call facade
-    notificationFacadeHandler.publishNewOrderNotification(notification);
+    notificationActionHelper.publishNewOrderNotification(notification);
 
     ack.acknowledge();
   }
@@ -148,7 +148,7 @@ public class NotificationSQSListener {
             PublishNotificationInformation.updateRole(
                 newcomer.getPublishInformation(), Role.ADMIN));
     // call facade
-    notificationFacadeHandler.publishNewComerNotification(information);
+    notificationActionHelper.publishNewComerNotification(information);
     ack.acknowledge();
   }
 
@@ -178,7 +178,7 @@ public class NotificationSQSListener {
             PublishNotificationInformation.updateRole(
                 delivery.getPublishInformation(), Role.CUSTOMER));
     // call facade
-    notificationFacadeHandler.publishDeliveryStartNotification(notification);
+    notificationActionHelper.publishDeliveryStartNotification(notification);
     ack.acknowledge();
   }
 
@@ -200,7 +200,7 @@ public class NotificationSQSListener {
             PublishNotificationInformation.updateRole(
                 orderCancel.getPublishInformation(), Role.MANAGER));
     // call facade
-    notificationFacadeHandler.publishOrderCancelNotification(notification);
+    notificationActionHelper.publishOrderCancelNotification(notification);
     ack.acknowledge();
   }
 }

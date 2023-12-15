@@ -73,7 +73,7 @@ public class NotificationActionHelper {
     NotificationInformation notifyData =
         NotificationInformation.getDeliveryNotificationData(notificationData);
     sse.publishCustomer(notifyData);
-//    sms.publishCustomer(notifyData);
+    sms.publishCustomer(notifyData);
 
     // save notification
     notificationCommandService.saveSingleNotification(
