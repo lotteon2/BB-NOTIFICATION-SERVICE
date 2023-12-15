@@ -1,6 +1,7 @@
 package kr.bb.notification.domain.notification.infrastructure.message;
 
 import bloomingblooms.domain.notification.NotificationData;
+import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.notification.newcomer.NewcomerNotification;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationSQSListener {
   private final ObjectMapper objectMapper;
-  private final NotificationActionHelper notificationFacadeHandler;
+  private final NotificationActionHelper notificationActionHelper;
 
   /**
    * 상품 재입고 알림
@@ -48,9 +49,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, ResaleNotificationList.class));
-    restoreNotification.getPublishInformation().setRole(Role.CUSTOMER);
+    NotificationData<ResaleNotificationList> notification =
+        NotificationData.notifyData(
+            restoreNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                restoreNotification.getPublishInformation(), Role.CUSTOMER));
+
     // call facade
-    notificationFacadeHandler.publishResaleNotification(restoreNotification);
+    notificationActionHelper.publishResaleNotification(notification);
     ack.acknowledge();
   }
 
@@ -74,9 +80,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, QuestionRegister.class));
-    questionRegisterNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<QuestionRegister> notification =
+        NotificationData.notifyData(
+            questionRegisterNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                questionRegisterNotification.getPublishInformation(), Role.MANAGER));
+
     // call facade
-    notificationFacadeHandler.publishQuestionRegisterNotification(questionRegisterNotification);
+    notificationActionHelper.publishQuestionRegisterNotification(notification);
     ack.acknowledge();
   }
 
@@ -101,9 +112,14 @@ public class NotificationSQSListener {
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewOrderNotification.class));
-    newOrderNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<NewOrderNotification> notification =
+        NotificationData.notifyData(
+            newOrderNotification.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                newOrderNotification.getPublishInformation(), Role.MANAGER));
+
     // call facade
-    notificationFacadeHandler.publishNewOrderNotification(newOrderNotification);
+    notificationActionHelper.publishNewOrderNotification(notification);
 
     ack.acknowledge();
   }
@@ -122,15 +138,19 @@ public class NotificationSQSListener {
   public void consumeNewcomerQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<Void> newcomerNotification =
+    NotificationData<Void> newcomer =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, NewcomerNotification.class));
-    newcomerNotification.getPublishInformation().setRole(Role.ADMIN);
+    NotificationData<Void> information =
+        NotificationData.notifyData(
+            newcomer.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                newcomer.getPublishInformation(), Role.ADMIN));
     // call facade
-    notificationFacadeHandler.publishNewComerNotification(newcomerNotification);
+    notificationActionHelper.publishNewComerNotification(information);
     ack.acknowledge();
   }
 
@@ -143,20 +163,24 @@ public class NotificationSQSListener {
    * @throws JsonProcessingException
    */
   @SqsListener(
-      value = "${cloud.aws.sqs.delivery-start-notification-queue.name}",
+      value = "${cloud.aws.sqs.delivery-status-update-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeDeliveryStartNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<DeliveryNotification> deliveryNotification =
+    NotificationData<DeliveryNotification> delivery =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, DeliveryNotification.class));
-    deliveryNotification.getPublishInformation().setRole(Role.CUSTOMER);
+    NotificationData<DeliveryNotification> notification =
+        NotificationData.notifyData(
+            delivery.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                delivery.getPublishInformation(), Role.CUSTOMER));
     // call facade
-    notificationFacadeHandler.publishDeliveryStartNotification(deliveryNotification);
+    notificationActionHelper.publishDeliveryStartNotification(notification);
     ack.acknowledge();
   }
 
@@ -166,29 +190,40 @@ public class NotificationSQSListener {
   public void consumeSettlementNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<SettlementNotification> settlementNotification =   objectMapper.readValue(
+    NotificationData<SettlementNotification> settlement =
+        objectMapper.readValue(
             message,
             objectMapper
-                .getTypeFactory()                .constructParametricType(NotificationData.class, SettlementNotification.class));
-    settlementNotification.getPublishInformation().setRole(Role.MANAGER);
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, SettlementNotification.class));
+    NotificationData<SettlementNotification> notification =
+        NotificationData.notifyData(
+            settlement.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                settlement.getPublishInformation(), Role.MANAGER));
     // call facade
-    notificationFacadeHandler.publishSettlementNotification(settlementNotification);
+    notificationActionHelper.publishSettlementNotification(notification);
   }
+
   @SqsListener(
       value = "${cloud.aws.sqs.out-of-stock-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeOutOfStockNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<OutOfStockNotification> outOfStockNotification =
+    NotificationData<OutOfStockNotification> outOfStock =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, OutOfStockNotification.class));
-    outOfStockNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<OutOfStockNotification> notification =
+        NotificationData.notifyData(
+            outOfStock.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                outOfStock.getPublishInformation(), Role.MANAGER));
     // call facade
-    notificationFacadeHandler.publishOutOfStockNotification(outOfStockNotification);
+    notificationActionHelper.publishOutOfStockNotification(notification);
   }
 
   @SqsListener(
@@ -197,15 +232,19 @@ public class NotificationSQSListener {
   public void consumeOrderCancelNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    NotificationData<OrderCancelNotification> orderCancelNotification =
+    NotificationData<OrderCancelNotification> orderCancel =
         objectMapper.readValue(
             message,
             objectMapper
                 .getTypeFactory()
                 .constructParametricType(NotificationData.class, OrderCancelNotification.class));
-    orderCancelNotification.getPublishInformation().setRole(Role.MANAGER);
+    NotificationData<OrderCancelNotification> notification =
+        NotificationData.notifyData(
+            orderCancel.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                orderCancel.getPublishInformation(), Role.MANAGER));
     // call facade
-    notificationFacadeHandler.publishOrderCancelNotification(orderCancelNotification);
+    notificationActionHelper.publishOrderCancelNotification(notification);
     ack.acknowledge();
   }
 }

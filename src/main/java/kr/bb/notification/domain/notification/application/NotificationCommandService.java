@@ -19,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationCommandService {
   private final NotificationJpaRepository notificationJpaRepository;
-  private final MemberNotificationJpaRepository memberNotificationJpaRepository;
 
   private Notification getNotification(PublishNotificationInformation publishInformation, Long id) {
     Notification notification = NotificationCommand.toEntity(publishInformation);
     MemberNotification memberNotification =
         MemberNotificationCommand.toEntity(id, publishInformation.getRole(), notification);
-    //    notification.setMemberNotifications(List.of(memberNotification));
+    notification.setMemberNotifications(List.of(memberNotification));
     return notification;
   }
 
@@ -39,14 +38,7 @@ public class NotificationCommandService {
   }
 
   public void saveSingleNotification(PublishNotificationInformation publishInformation, Long id) {
-    MemberNotification memberNotification = getMemberNotification(publishInformation, id);
-    memberNotificationJpaRepository.save(memberNotification);
-    //    notificationJpaRepository.save(notification);
-  }
-
-  private MemberNotification getMemberNotification(
-      PublishNotificationInformation publishInformation, Long id) {
-    Notification notification = NotificationCommand.toEntity(publishInformation);
-    return MemberNotificationCommand.toEntity(id, publishInformation.getRole(), notification);
+    Notification notification = getNotification(publishInformation, id);
+    notificationJpaRepository.save(notification);
   }
 }

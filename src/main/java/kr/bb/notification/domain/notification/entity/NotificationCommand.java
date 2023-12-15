@@ -120,7 +120,7 @@ public class NotificationCommand {
       return NotificationInformation.builder()
           .role(notificationData.getPublishInformation().getRole())
           .phoneNumber(notificationData.getWhoToNotify().getPhoneNumber())
-          .content(notificationData.getPublishInformation().getNotificationKind().getMessage())
+          .content(notificationData.getWhoToNotify().getDeliveryStatus().getMessage())
           .redirectUrl(notificationData.getPublishInformation().getNotificationUrl())
           .id(notificationData.getWhoToNotify().getUserId())
           .notificationKind(notificationData.getPublishInformation().getNotificationKind())
