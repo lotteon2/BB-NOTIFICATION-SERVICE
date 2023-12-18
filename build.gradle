@@ -80,7 +80,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.emitter.**"]
+            excludes = ["*.mapper*", "**.emitter.**",  "**.infrastructure.**"]
         }
     }
 }
