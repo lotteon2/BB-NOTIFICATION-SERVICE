@@ -273,7 +273,7 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
-    @SqsListener(
+  @SqsListener(
       value = "${cloud.aws.sqs.inquery-response-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeInqueryResponseNotificationQueue(
@@ -284,7 +284,8 @@ public class NotificationSQSListener {
             message,
             objectMapper
                 .getTypeFactory()
-                .constructParametricType(NotificationData.class, InqueryResponseNotification.class));
+                .constructParametricType(
+                    NotificationData.class, InqueryResponseNotification.class));
     NotificationData<InqueryResponseNotification> notification =
         NotificationData.notifyData(
             orderCancel.getWhoToNotify(),

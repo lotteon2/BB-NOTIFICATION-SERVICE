@@ -21,10 +21,21 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
   private final AWSConfiguration awsConfiguration;
 
   private static PublishRequest makePublishRequest(NotificationInformation notifyData) {
-    return PublishRequest.builder()
-        .message(notifyData.getContent() + "\n" + notifyData.getRedirectUrl())
-        .phoneNumber("+82" + notifyData.getPhoneNumber())
-        .build();
+    if (notifyData.getContent() == null)
+      return PublishRequest.builder()
+          .message(notifyData.getType() + "\n" + notifyData.getRedirectUrl())
+          .phoneNumber("+82" + notifyData.getPhoneNumber())
+          .build();
+    else
+      return PublishRequest.builder()
+          .message(
+              notifyData.getType()
+                  + "\n"
+                  + notifyData.getContent()
+                  + "\n"
+                  + notifyData.getRedirectUrl())
+          .phoneNumber("+82" + notifyData.getPhoneNumber())
+          .build();
   }
 
   private static void setSMSAttribute(SnsClient snsClient) {
