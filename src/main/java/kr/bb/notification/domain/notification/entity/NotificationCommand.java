@@ -78,6 +78,7 @@ public class NotificationCommand {
   @AllArgsConstructor
   public static class NotificationInformation {
     private Long id;
+    private String type;
     private String content;
     private String redirectUrl;
     private String phoneNumber;
@@ -91,7 +92,8 @@ public class NotificationCommand {
               item ->
                   NotificationInformation.builder()
                       .id(item.getUserId())
-                      .content(
+                      .content(restoreNotification.getPublishInformation().getContent())
+                      .type(
                           restoreNotification
                               .getPublishInformation()
                               .getNotificationKind()
@@ -112,7 +114,7 @@ public class NotificationCommand {
           .role(publishNotificationInformation.getRole())
           .notificationKind(publishNotificationInformation.getNotificationKind())
           .redirectUrl(publishNotificationInformation.getNotificationUrl())
-          .content(publishNotificationInformation.getNotificationKind().getMessage())
+          .type(publishNotificationInformation.getNotificationKind().getMessage())
           .build();
     }
 
@@ -121,7 +123,7 @@ public class NotificationCommand {
       return NotificationInformation.builder()
           .role(notificationData.getPublishInformation().getRole())
           .phoneNumber(notificationData.getWhoToNotify().getPhoneNumber())
-          .content(notificationData.getWhoToNotify().getDeliveryStatus().getMessage())
+          .type(notificationData.getWhoToNotify().getDeliveryStatus().getMessage())
           .redirectUrl(notificationData.getPublishInformation().getNotificationUrl())
           .id(notificationData.getWhoToNotify().getUserId())
           .notificationKind(notificationData.getPublishInformation().getNotificationKind())
@@ -136,7 +138,7 @@ public class NotificationCommand {
           .id(notification.getWhoToNotify().getUserId())
           .phoneNumber(notification.getWhoToNotify().getPhoneNumber())
           .redirectUrl(notification.getPublishInformation().getNotificationUrl())
-          .content(notification.getPublishInformation().getNotificationKind().getMessage())
+          .type(notification.getPublishInformation().getNotificationKind().getMessage())
           .build();
     }
   }
