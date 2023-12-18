@@ -64,3 +64,6 @@ cloud:
       order-cancel-notification-queue:
         name: ""
         url: ""
+      inquery-response-notification-queue:
+        name: ""
+        url: ""

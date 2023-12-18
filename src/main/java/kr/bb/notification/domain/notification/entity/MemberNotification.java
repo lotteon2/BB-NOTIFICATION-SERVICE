@@ -51,4 +51,9 @@ public class MemberNotification extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JoinColumn(name = "notification_id")
   private Notification notification;
+
+  public MemberNotification updateIsRead() {
+    this.isRead = true;
+    return this;
+  }
 }

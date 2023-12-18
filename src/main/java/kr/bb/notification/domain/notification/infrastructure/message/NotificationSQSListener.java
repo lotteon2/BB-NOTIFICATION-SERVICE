@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
+import kr.bb.notification.domain.notification.infrastructure.dto.InqueryResponseNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
@@ -184,6 +185,14 @@ public class NotificationSQSListener {
     ack.acknowledge();
   }
 
+  /**
+   * 정산 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.settlement-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -205,6 +214,14 @@ public class NotificationSQSListener {
     notificationActionHelper.publishSettlementNotification(notification);
   }
 
+  /**
+   * 꽃 재고 부족 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.out-of-stock-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -226,6 +243,14 @@ public class NotificationSQSListener {
     notificationActionHelper.publishOutOfStockNotification(notification);
   }
 
+  /**
+   * 주문 취소 알림
+   *
+   * @param message
+   * @param headers
+   * @param ack
+   * @throws JsonProcessingException
+   */
   @SqsListener(
       value = "${cloud.aws.sqs.order-cancel-notification-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
@@ -245,6 +270,28 @@ public class NotificationSQSListener {
                 orderCancel.getPublishInformation(), Role.MANAGER));
     // call facade
     notificationActionHelper.publishOrderCancelNotification(notification);
+    ack.acknowledge();
+  }
+
+    @SqsListener(
+      value = "${cloud.aws.sqs.inquery-response-notification-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeInqueryResponseNotificationQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<InqueryResponseNotification> orderCancel =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, InqueryResponseNotification.class));
+    NotificationData<InqueryResponseNotification> notification =
+        NotificationData.notifyData(
+            orderCancel.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                orderCancel.getPublishInformation(), Role.MANAGER));
+    // call facade
+    notificationActionHelper.publishInqueryResponseNotification(notification);
     ack.acknowledge();
   }
 }

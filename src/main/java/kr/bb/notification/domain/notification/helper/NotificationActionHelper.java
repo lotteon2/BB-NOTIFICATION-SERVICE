@@ -8,9 +8,10 @@ import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.infrastructure.dto.InqueryResponseNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
-import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
+import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
@@ -113,5 +114,24 @@ public class NotificationActionHelper {
 
     notificationCommandService.saveSingleNotification(
         notification.getPublishInformation(), notification.getWhoToNotify().getStoreId());
+  }
+
+  /**
+   * 문의 답변 등록 알림
+   *
+   * @param notification
+   */
+  public void publishInqueryResponseNotification(
+      NotificationData<InqueryResponseNotification> notification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
+    NotificationInformation smsData = NotificationInformation.getSMSData(notification);
+    sse.publishCustomer(sseData);
+    sms.publishCustomer(smsData);
+
+    // save notification
+    notificationCommandService.saveSingleNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
   }
 }

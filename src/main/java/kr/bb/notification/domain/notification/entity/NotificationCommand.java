@@ -8,6 +8,7 @@ import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.notification.domain.notification.infrastructure.dto.InqueryResponseNotification;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -124,6 +125,18 @@ public class NotificationCommand {
           .redirectUrl(notificationData.getPublishInformation().getNotificationUrl())
           .id(notificationData.getWhoToNotify().getUserId())
           .notificationKind(notificationData.getPublishInformation().getNotificationKind())
+          .build();
+    }
+
+    public static NotificationInformation getSMSData(
+        NotificationData<InqueryResponseNotification> notification) {
+      return NotificationInformation.builder()
+          .notificationKind(notification.getPublishInformation().getNotificationKind())
+          .role(notification.getPublishInformation().getRole())
+          .id(notification.getWhoToNotify().getUserId())
+          .phoneNumber(notification.getWhoToNotify().getPhoneNumber())
+          .redirectUrl(notification.getPublishInformation().getNotificationUrl())
+          .content(notification.getPublishInformation().getNotificationKind().getMessage())
           .build();
     }
   }

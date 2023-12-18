@@ -23,7 +23,7 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
   private static PublishRequest makePublishRequest(NotificationInformation notifyData) {
     return PublishRequest.builder()
         .message(notifyData.getContent() + "\n" + notifyData.getRedirectUrl())
-        .phoneNumber(notifyData.getPhoneNumber())
+        .phoneNumber("+82" + notifyData.getPhoneNumber())
         .build();
   }
 

@@ -18,4 +18,10 @@ public class NotificationQueryRestController {
       @RequestHeader Long userId) {
     return CommonResponse.success(notificationQueryFacadeHandler.getNotifications(userId));
   }
+
+  @GetMapping("unread-notification")
+  public CommonResponse<NotificationCommand.UnreadNotificationCount> getUnreadNotificationCount(
+      @RequestHeader Long userId) {
+    return CommonResponse.success(notificationQueryFacadeHandler.getUnreadNotification(userId));
+  }
 }
