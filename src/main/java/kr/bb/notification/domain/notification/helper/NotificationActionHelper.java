@@ -2,16 +2,17 @@ package kr.bb.notification.domain.notification.helper;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.delivery.DeliveryNotification;
-import bloomingblooms.domain.notification.neworder.NewOrderNotification;
+import bloomingblooms.domain.notification.order.NewOrderNotification;
+import bloomingblooms.domain.notification.order.OrderCancelNotification;
+import bloomingblooms.domain.notification.order.SettlementNotification;
+import bloomingblooms.domain.notification.question.InqueryResponseNotification;
 import bloomingblooms.domain.notification.question.QuestionRegister;
+import bloomingblooms.domain.notification.stock.OutOfStockNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
-import kr.bb.notification.domain.notification.infrastructure.dto.InqueryResponseNotification;
-import kr.bb.notification.domain.notification.infrastructure.dto.OrderCancelNotification;
-import kr.bb.notification.domain.notification.infrastructure.dto.OutOfStockNotification;
-import kr.bb.notification.domain.notification.infrastructure.dto.SettlementNotification;
+
 import kr.bb.notification.domain.notification.infrastructure.sms.SendSMS;
 import kr.bb.notification.domain.notification.infrastructure.sse.SendSSE;
 import lombok.RequiredArgsConstructor;
