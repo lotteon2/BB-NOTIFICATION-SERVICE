@@ -5,7 +5,6 @@ import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.notification.newcomer.NewcomerNotification;
-import bloomingblooms.domain.notification.order.NewOrderNotification;
 import bloomingblooms.domain.notification.order.OrderCancelNotification;
 import bloomingblooms.domain.notification.order.SettlementNotification;
 import bloomingblooms.domain.notification.question.InqueryResponseNotification;
@@ -13,11 +12,14 @@ import bloomingblooms.domain.notification.question.QuestionRegister;
 import bloomingblooms.domain.notification.stock.OutOfStockNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import kr.bb.notification.common.dto.NewOrderEvent;
+import kr.bb.notification.common.dto.NewOrderEvent.NewOrderEventItem;
 import kr.bb.notification.domain.notification.helper.NotificationActionHelper;
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.aws.messaging.listener.Acknowledgment;
 import org.springframework.cloud.aws.messaging.listener.SqsMessageDeletionPolicy;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
@@ -25,6 +27,7 @@ import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationSQSListener {
@@ -107,23 +110,30 @@ public class NotificationSQSListener {
   public void consumeNewOrderNotificationQueue(
       @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
       throws JsonProcessingException {
-    // TODO: 주문 완료 후 타입 정의해서 보내주기 kind
-    NotificationData<NewOrderNotification> newOrderNotification =
-        objectMapper.readValue(
-            message,
-            objectMapper
-                .getTypeFactory()
-                .constructParametricType(NotificationData.class, NewOrderNotification.class));
-    NotificationData<NewOrderNotification> notification =
-        NotificationData.notifyData(
-            newOrderNotification.getWhoToNotify(),
-            PublishNotificationInformation.updateRole(
-                newOrderNotification.getPublishInformation(), Role.MANAGER));
+    // sns 에서 발생한 이벤트 sqs 에서 받기
+    String messageFromSNS = getMessageFromSNS(message);
+    NewOrderEvent newOrderEvent = objectMapper.readValue(messageFromSNS, NewOrderEvent.class);
 
-    // call facade
-    notificationActionHelper.publishNewOrderNotification(notification);
+    newOrderEvent
+        .getOrders()
+        .forEach(
+            item -> {
+              NotificationData<NewOrderEventItem> notificationData =
+                  NotificationData.notifyData(
+                      item,
+                      PublishNotificationInformation.makePublishNotificationInformation(
+                          NewOrderEventItem.getNotificationURL(item.getOrderType()),
+                          NewOrderEventItem.getNotificationKind(item.getOrderType()),
+                          Role.MANAGER));
+              notificationActionHelper.publishNewOrderNotification(notificationData);
+            });
 
     ack.acknowledge();
+  }
+
+  private String getMessageFromSNS(String message) throws JsonProcessingException {
+    JsonNode jsonNode = objectMapper.readTree(message);
+    return jsonNode.get("Message").asText();
   }
 
   /**
