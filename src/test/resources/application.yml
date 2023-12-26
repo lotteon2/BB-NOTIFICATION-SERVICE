@@ -33,6 +33,8 @@ cloud:
       name: ""
     sns:
       arn: ""
+      new-order-event:
+        arn: ""
     credentials:
       ACCESS_KEY_ID: "test"
       SECRET_ACCESS_KEY: "test"
