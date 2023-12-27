@@ -301,7 +301,7 @@ public class NotificationSQSListener {
         NotificationData.notifyData(
             orderCancel.getWhoToNotify(),
             PublishNotificationInformation.updateRole(
-                orderCancel.getPublishInformation(), Role.MANAGER));
+                orderCancel.getPublishInformation(), Role.CUSTOMER));
     // call facade
     notificationActionHelper.publishInqueryResponseNotification(notification);
     ack.acknowledge();
