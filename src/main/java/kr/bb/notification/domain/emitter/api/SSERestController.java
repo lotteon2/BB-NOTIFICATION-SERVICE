@@ -16,6 +16,7 @@ public class SSERestController {
   private final SseService sseService;
 
   // TODO: 화면 테스트용으로 pathvariable 사용
+  // TODO: log in event
   @GetMapping(value = "subscribe/manager/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribeManagerLocal(@PathVariable Long userId) {
     return sseService.subscribe(userId, Role.MANAGER.getRole());

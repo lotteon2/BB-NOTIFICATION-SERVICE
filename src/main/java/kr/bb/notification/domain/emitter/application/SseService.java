@@ -43,7 +43,7 @@ public class SseService {
 
     if (emitter != null) {
       try {
-        emitter.send(SseEmitter.event().id(String.valueOf(userId)).name("sse").data(data));
+        emitter.send(SseEmitter.event().id(String.valueOf(userId)).name("CONNECT").data(data));
       } catch (IOException exception) {
         emitterRepository.deleteById(userId, role);
         throw new RuntimeException("연결 오류!");
