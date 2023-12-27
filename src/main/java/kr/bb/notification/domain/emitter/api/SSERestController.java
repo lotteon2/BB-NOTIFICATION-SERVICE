@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -16,17 +17,32 @@ public class SSERestController {
 
   // TODO: 화면 테스트용으로 pathvariable 사용
   @GetMapping(value = "subscribe/manager/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-  public SseEmitter subscribeManager(@PathVariable Long userId) {
+  public SseEmitter subscribeManagerLocal(@PathVariable Long userId) {
     return sseService.subscribe(userId, Role.MANAGER.getRole());
   }
 
   @GetMapping(value = "subscribe/admin/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-  public SseEmitter subscribeAdmin(@PathVariable Long userId) {
+  public SseEmitter subscribeAdminLocal(@PathVariable Long userId) {
     return sseService.subscribe(userId, Role.ADMIN.getRole());
   }
 
   @GetMapping(value = "subscribe/customer/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-  public SseEmitter subscribe(@PathVariable Long userId) {
+  public SseEmitter subscribeLocal(@PathVariable Long userId) {
+    return sseService.subscribe(userId, Role.CUSTOMER.getRole());
+  }
+
+  @GetMapping(value = "subscribe/manager", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter subscribeManager(@RequestHeader Long storeId) {
+    return sseService.subscribe(storeId, Role.MANAGER.getRole());
+  }
+
+  @GetMapping(value = "subscribe/admin", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter subscribeAdmin(@RequestHeader Long userId) {
+    return sseService.subscribe(userId, Role.ADMIN.getRole());
+  }
+
+  @GetMapping(value = "subscribe/customer", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public SseEmitter subscribe(@RequestHeader Long userId) {
     return sseService.subscribe(userId, Role.CUSTOMER.getRole());
   }
 }
