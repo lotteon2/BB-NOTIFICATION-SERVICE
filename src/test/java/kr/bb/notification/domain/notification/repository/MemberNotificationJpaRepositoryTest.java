@@ -3,6 +3,7 @@ package kr.bb.notification.domain.notification.repository;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import bloomingblooms.domain.notification.Role;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -22,15 +23,16 @@ class MemberNotificationJpaRepositoryTest {
   void findUnreadNotificationCount() {
     List<MemberNotification> list = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      list.add(MemberNotification.builder().userId(10L).isRead(true).build());
+      list.add(MemberNotification.builder().role(Role.CUSTOMER).userId(10L).isRead(true).build());
     }
     for (int i = 0; i < 3; i++) {
-      list.add(MemberNotification.builder().userId(10L).isRead(false).build());
+      list.add(MemberNotification.builder().role(Role.CUSTOMER).userId(10L).isRead(false).build());
     }
     Notification build = Notification.builder().memberNotifications(list).build();
     notificationJpaRepository.save(build);
 
-    Long unreadNotificationCount = memberNotificationJpaRepository.findUnreadNotificationCount(10L);
+    Long unreadNotificationCount =
+        memberNotificationJpaRepository.findUnreadNotificationCount(10L, Role.CUSTOMER);
     assertThat(unreadNotificationCount).isEqualTo(3);
   }
 }

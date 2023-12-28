@@ -3,6 +3,7 @@ package kr.bb.notification.domain.notification.repository;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import bloomingblooms.domain.notification.Role;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -22,7 +23,8 @@ class NotificationJpaRepositoryTest {
   @DisplayName("사용자 알림 리스트 조회")
   void findNotifications() {
     createNotifications();
-    List<MemberNotification> notifications = memberNotificationJpaRepository.findNotifications(8L);
+    List<MemberNotification> notifications =
+        memberNotificationJpaRepository.findNotifications(8L, Role.CUSTOMER);
     List<Notification> all = notificationJpaRepository.findAll();
     for (MemberNotification m : notifications) {
       System.out.println(m.toString());
@@ -37,12 +39,24 @@ class NotificationJpaRepositoryTest {
     for (int i = 0; i < 5; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
+          .add(
+              MemberNotification.builder()
+                  .notification(build)
+                  .userId(8L)
+                  .role(Role.CUSTOMER)
+                  .isRead(true)
+                  .build());
     }
     for (int i = 0; i < 3; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
+          .add(
+              MemberNotification.builder()
+                  .notification(build)
+                  .userId(8L)
+                  .role(Role.CUSTOMER)
+                  .isRead(false)
+                  .build());
     }
     notificationJpaRepository.save(build);
   }

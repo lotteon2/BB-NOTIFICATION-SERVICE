@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.application;
 
+import bloomingblooms.domain.notification.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -16,15 +17,15 @@ public class NotificationQueryService {
   private final MemberNotificationJpaRepository memberNotificationJpaRepository;
 
   @Transactional
-  public NotificationCommand.NotificationList getNotifications(Long userId) {
+  public NotificationCommand.NotificationList getNotifications(Long userId, Role role) {
     List<MemberNotification> notifications =
-        memberNotificationJpaRepository.findNotifications(userId);
+        memberNotificationJpaRepository.findNotifications(userId, role);
     List<MemberNotification> notificationsIsRead =
         notifications.stream().map(MemberNotification::updateIsRead).collect(Collectors.toList());
     return NotificationCommand.NotificationList.getData(notificationsIsRead);
   }
 
-  public Long getUnreadNotificationCount(Long userId) {
-    return memberNotificationJpaRepository.findUnreadNotificationCount(userId);
+  public Long getUnreadNotificationCount(Long userId, Role role) {
+    return memberNotificationJpaRepository.findUnreadNotificationCount(userId, role);
   }
 }
