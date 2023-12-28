@@ -6,6 +6,7 @@ import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.notification.delivery.DeliveryNotification;
 import bloomingblooms.domain.notification.question.InqueryResponseNotification;
+import bloomingblooms.domain.order.OrderStatusNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,6 +140,18 @@ public class NotificationCommand {
           .phoneNumber(notification.getWhoToNotify().getPhoneNumber())
           .redirectUrl(notification.getPublishInformation().getNotificationUrl())
           .type(notification.getPublishInformation().getNotificationKind().getMessage())
+          .build();
+    }
+
+    public static NotificationInformation getNewOrderStatusData(
+        NotificationData<OrderStatusNotification> notification) {
+      return NotificationInformation.builder()
+          .notificationKind(notification.getPublishInformation().getNotificationKind())
+          .phoneNumber(notification.getWhoToNotify().getPhoneNumber())
+          .redirectUrl(notification.getPublishInformation().getNotificationUrl())
+          .id(notification.getWhoToNotify().getUserId())
+          .type(notification.getPublishInformation().getNotificationKind().getMessage())
+          .role(notification.getPublishInformation().getRole())
           .build();
     }
   }

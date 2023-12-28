@@ -8,6 +8,7 @@ import bloomingblooms.domain.notification.question.InqueryResponseNotification;
 import bloomingblooms.domain.notification.question.QuestionRegister;
 import bloomingblooms.domain.notification.stock.OutOfStockNotification;
 import bloomingblooms.domain.order.NewOrderEvent.NewOrderEventItem;
+import bloomingblooms.domain.order.OrderStatusNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import kr.bb.notification.domain.notification.application.NotificationCommandService;
@@ -127,6 +128,25 @@ public class NotificationActionHelper {
         NotificationInformation.getSSEData(
             notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
     NotificationInformation smsData = NotificationInformation.getSMSData(notification);
+    sse.publishCustomer(sseData);
+    sms.publishCustomer(smsData);
+
+    // save notification
+    notificationCommandService.saveSingleNotification(
+        notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
+  }
+
+  /**
+   * 주문 상태 알림
+   *
+   * @param notification
+   */
+  public void publishNewOrderStatusNotification(
+      NotificationData<OrderStatusNotification> notification) {
+    NotificationInformation sseData =
+        NotificationInformation.getSSEData(
+            notification.getPublishInformation(), notification.getWhoToNotify().getUserId());
+    NotificationInformation smsData = NotificationInformation.getNewOrderStatusData(notification);
     sse.publishCustomer(sseData);
     sms.publishCustomer(smsData);
 
