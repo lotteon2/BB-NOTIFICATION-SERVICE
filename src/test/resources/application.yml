@@ -69,3 +69,6 @@ cloud:
       inquery-response-notification-queue:
         name: ""
         url: ""
+      new-order-status-queue:
+        name: ""
+        url: ""

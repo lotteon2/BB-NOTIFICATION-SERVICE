@@ -12,6 +12,7 @@ import bloomingblooms.domain.notification.question.QuestionRegister;
 import bloomingblooms.domain.notification.stock.OutOfStockNotification;
 import bloomingblooms.domain.order.NewOrderEvent;
 import bloomingblooms.domain.order.NewOrderEvent.NewOrderEventItem;
+import bloomingblooms.domain.order.OrderStatusNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -304,6 +305,27 @@ public class NotificationSQSListener {
                 orderCancel.getPublishInformation(), Role.CUSTOMER));
     // call facade
     notificationActionHelper.publishInqueryResponseNotification(notification);
+    ack.acknowledge();
+  }
+    @SqsListener(
+      value = "${cloud.aws.sqs.new-order-status-queue.name}",
+      deletionPolicy = SqsMessageDeletionPolicy.NEVER)
+  public void consumeNewOrderStatusQueue(
+      @Payload String message, @Headers Map<String, String> headers, Acknowledgment ack)
+      throws JsonProcessingException {
+    NotificationData<OrderStatusNotification> orderCancel =
+        objectMapper.readValue(
+            message,
+            objectMapper
+                .getTypeFactory()
+                .constructParametricType(NotificationData.class, OrderStatusNotification.class));
+    NotificationData<OrderStatusNotification> notification =
+        NotificationData.notifyData(
+            orderCancel.getWhoToNotify(),
+            PublishNotificationInformation.updateRole(
+                orderCancel.getPublishInformation(), Role.CUSTOMER));
+    // call facade
+    notificationActionHelper.publishNewOrderStatusNotification(notification);
     ack.acknowledge();
   }
 }
