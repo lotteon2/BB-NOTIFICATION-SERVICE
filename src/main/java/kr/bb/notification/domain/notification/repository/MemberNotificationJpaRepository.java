@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.repository;
 
+import bloomingblooms.domain.notification.Role;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,9 +11,10 @@ public interface MemberNotificationJpaRepository extends JpaRepository<MemberNot
       "SELECT m from MemberNotification m "
           + "left join Notification n "
           + "on m.notification.notificationId=n.notificationId "
-          + "where m.userId=:userId")
-  List<MemberNotification> findNotifications(Long userId);
+          + "where m.userId=:userId and m.role=:role")
+  List<MemberNotification> findNotifications(Long userId, Role role);
 
-  @Query("select count(m) from MemberNotification m where m.userId=:userId and m.isRead=false")
-  Long findUnreadNotificationCount(Long userId);
+  @Query(
+      "select count(m) from MemberNotification m where m.userId=:userId and m.isRead=false and m.role=:role")
+  Long findUnreadNotificationCount(Long userId, Role role);
 }

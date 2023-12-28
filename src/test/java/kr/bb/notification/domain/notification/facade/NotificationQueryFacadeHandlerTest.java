@@ -2,6 +2,7 @@ package kr.bb.notification.domain.notification.facade;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import bloomingblooms.domain.notification.Role;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -26,8 +27,6 @@ class NotificationQueryFacadeHandlerTest {
   @Autowired NotificationJpaRepository notificationJpaRepository;
   @Autowired private NotificationQueryActionHelper notificationQueryFacadeHandler;
 
-
-
   private void createNotifications() {
     Notification build =
         Notification.builder().notificationLink("link").notificationContent("content").build();
@@ -35,12 +34,24 @@ class NotificationQueryFacadeHandlerTest {
     for (int i = 0; i < 5; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(8L).isRead(true).build());
+          .add(
+              MemberNotification.builder()
+                  .role(Role.CUSTOMER)
+                  .notification(build)
+                  .userId(8L)
+                  .isRead(true)
+                  .build());
     }
     for (int i = 0; i < 3; i++) {
       build
           .getMemberNotifications()
-          .add(MemberNotification.builder().notification(build).userId(8L).isRead(false).build());
+          .add(
+              MemberNotification.builder()
+                  .role(Role.CUSTOMER)
+                  .notification(build)
+                  .userId(8L)
+                  .isRead(false)
+                  .build());
     }
     notificationJpaRepository.save(build);
   }
@@ -49,7 +60,8 @@ class NotificationQueryFacadeHandlerTest {
   @DisplayName("알림 정보 조회")
   void getNotifications() {
     createNotifications();
-    NotificationList notifications = notificationQueryFacadeHandler.getNotifications(8L);
+    NotificationList notifications =
+        notificationQueryFacadeHandler.getNotifications(8L, Role.CUSTOMER);
     assertThat(notifications.getNotifications().size()).isEqualTo(8);
     assertThat(notifications.getNotifications().get(0).getNotificationContent())
         .isEqualTo("content");
@@ -60,17 +72,17 @@ class NotificationQueryFacadeHandlerTest {
   void getUnreadNotification() {
     createNotification();
     UnreadNotificationCount unreadNotification =
-        notificationQueryFacadeHandler.getUnreadNotification(10L);
+        notificationQueryFacadeHandler.getUnreadNotification(10L, Role.CUSTOMER);
     assertThat(unreadNotification.getUnreadCount()).isEqualTo(3);
   }
 
   private void createNotification() {
     List<MemberNotification> list = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      list.add(MemberNotification.builder().userId(10L).isRead(true).build());
+      list.add(MemberNotification.builder().role(Role.CUSTOMER).userId(10L).isRead(true).build());
     }
     for (int i = 0; i < 3; i++) {
-      list.add(MemberNotification.builder().userId(10L).isRead(false).build());
+      list.add(MemberNotification.builder().role(Role.CUSTOMER).userId(10L).isRead(false).build());
     }
     Notification build = Notification.builder().memberNotifications(list).build();
     notificationJpaRepository.save(build);
