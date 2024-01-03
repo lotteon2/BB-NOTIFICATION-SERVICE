@@ -63,4 +63,4 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: nowgnas/bb:notification-${{ env.NEW_TAG }}
+          tags: nowgnas/bb-notification:${{ env.NEW_TAG }}, nowgnas/bb-notification:latest
