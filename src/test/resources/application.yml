@@ -1,0 +1,74 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  datasource:
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    # Bean이 생성되기 전에 ddl 실행
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-1
+    s3:
+      name: ""
+    sns:
+      arn: ""
+      new-order-event:
+        arn: ""
+    credentials:
+      ACCESS_KEY_ID: "test"
+      SECRET_ACCESS_KEY: "test"
+    sqs:
+      product-resale-notification-check-queue:
+        name: ""
+        url: ""
+      product-resale-notification-queue:
+        name: ""
+        url: ""
+      question-register-notification-queue:
+        name: ""
+        url: ""
+      new-order-queue:
+        name: ""
+        url: ""
+      newcomer-queue:
+        name: ""
+        url: ""
+      delivery-status-update-notification-queue:
+        name: ""
+        url: ""
+      settlement-notification-queue:
+        name: ""
+        url: ""
+      out-of-stock-notification-queue:
+        name: ""
+        url: ""
+      order-cancel-notification-queue:
+        name: ""
+        url: ""
+      inquery-response-notification-queue:
+        name: ""
+        url: ""
+      new-order-status-queue:
+        name: ""
+        url: ""
