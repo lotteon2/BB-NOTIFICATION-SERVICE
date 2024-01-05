@@ -4,14 +4,18 @@ import bloomingblooms.domain.notification.Role;
 import javax.servlet.http.HttpServletResponse;
 import kr.bb.notification.domain.emitter.application.SseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Slf4j
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class SSERestController {
@@ -28,6 +32,7 @@ public class SSERestController {
     response.addHeader("X-Accel-Buffering", "no");
     response.addHeader(HttpHeaders.CONNECTION, "keep-alive");
     response.addHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
+    log.info(userId.toString() + "manager subscribe");
     return sseService.subscribe(userId, Role.MANAGER.getRole());
   }
 
