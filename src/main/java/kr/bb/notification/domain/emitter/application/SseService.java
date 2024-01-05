@@ -27,11 +27,14 @@ public class SseService {
 
   private void sendToClient(NotificationInformation event) {
     String id = event.getRole().getRole() + event.getId();
-    log.info("ID IS " + id);
     SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole().getRole());
     if (emitter != null) {
       try {
-        emitter.send(SseEmitter.event().id(id).name(String.valueOf(event.getNotificationKind())));
+        emitter.send(
+            SseEmitter.event()
+                .id(id)
+                .data(event.getNotificationKind())
+                .name(String.valueOf(event.getNotificationKind())));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

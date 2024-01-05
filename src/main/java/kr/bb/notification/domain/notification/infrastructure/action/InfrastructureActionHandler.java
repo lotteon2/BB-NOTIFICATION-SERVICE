@@ -5,5 +5,5 @@ import kr.bb.notification.domain.notification.entity.NotificationCommand;
 
 public interface InfrastructureActionHandler<
     T extends NotificationCommand.NotificationInformation> {
-  void publishCustomer(T notifyData);
+  void publish(T notifyData);
 }

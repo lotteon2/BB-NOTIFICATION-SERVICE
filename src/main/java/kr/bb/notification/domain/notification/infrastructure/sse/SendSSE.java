@@ -14,7 +14,7 @@ public class SendSSE implements InfrastructureActionHandler<NotificationInformat
   private final SseService sseService;
 
   @Override
-  public void publishCustomer(NotificationInformation notifyData) {
+  public void publish(NotificationInformation notifyData) {
     sseService.notify(notifyData);
   }
 }

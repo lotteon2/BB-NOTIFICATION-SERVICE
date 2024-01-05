@@ -47,7 +47,7 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
   }
 
   @Override
-  public void publishCustomer(NotificationInformation notifyData) {
+  public void publish(NotificationInformation notifyData) {
     SnsClient snsClient = awsConfiguration.snsClient();
     try {
       setSMSAttribute(snsClient);
