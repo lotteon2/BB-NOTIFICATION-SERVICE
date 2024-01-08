@@ -17,6 +17,7 @@ public class SseService {
 
   public SseEmitter subscribe(Long userId, String role) {
     SseEmitter emitter = createEmitter(userId, role);
+    log.info("subscribe user : [" + role + userId + "]");
     sendToClient(userId, role, "EventStream Created. [userId=" + userId + "]");
     return emitter;
   }
@@ -30,12 +31,14 @@ public class SseService {
     SseEmitter emitter = emitterRepository.get(event.getId(), event.getRole().getRole());
     if (emitter != null) {
       try {
+        log.info("send sse event to user : [" + id + "]");
         emitter.send(
             SseEmitter.event()
                 .id(id)
                 .data(event.getNotificationKind())
                 .name(String.valueOf(event.getNotificationKind())));
       } catch (IOException e) {
+        log.error(e.getMessage());
         throw new RuntimeException(e);
       }
     }
