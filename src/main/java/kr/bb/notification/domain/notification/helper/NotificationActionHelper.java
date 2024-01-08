@@ -56,11 +56,11 @@ public class NotificationActionHelper {
 
     public void publishNewComerNotification(NotificationData<Void> notification) {
         NotificationInformation sseNotification =
-                NotificationInformation.getSSEData(notification.getPublishInformation(), 1L);
+                NotificationInformation.getSSEData(notification.getPublishInformation(), 100L);
         sse.publish(sseNotification);
 
         // save notification
-        notificationCommandService.saveSingleNotification(notification.getPublishInformation(), 1L);
+        notificationCommandService.saveSingleNotification(notification.getPublishInformation(), 100L);
     }
 
     public void publishNewOrderNotification(NotificationData<NewOrderEventItem> notification) {
