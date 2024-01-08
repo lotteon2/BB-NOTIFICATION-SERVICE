@@ -55,7 +55,7 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
       PublishResponse response = snsClient.publish(publishRequest);
       log.info(response.messageId() + " message sent " + response.sdkHttpResponse().statusCode());
     } catch (SnsException e) {
-      log.error("재입고 알림 메세지 전송 실패");
+      log.error(notifyData.getNotificationKind() + "알림 메세지 전송 실패");
     }
   }
 }
