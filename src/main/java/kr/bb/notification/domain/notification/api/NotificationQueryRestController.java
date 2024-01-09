@@ -6,6 +6,7 @@ import kr.bb.notification.domain.notification.entity.NotificationCommand;
 import kr.bb.notification.domain.notification.helper.NotificationQueryActionHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,24 +23,24 @@ public class NotificationQueryRestController {
   }
 
   @GetMapping("/customer/unread-notification")
-  public CommonResponse<NotificationCommand.UnreadNotificationCount> getUnreadNotificationCountCUSTOMER(
-      @RequestHeader Long userId) {
+  public CommonResponse<NotificationCommand.UnreadNotificationCount>
+      getUnreadNotificationCountCUSTOMER(@RequestHeader Long userId) {
     return CommonResponse.success(
         notificationQueryFacadeHandler.getUnreadNotification(userId, Role.CUSTOMER));
   }
 
-  @GetMapping("/manager")
+  @GetMapping("/manager/{storeId}")
   public CommonResponse<NotificationCommand.NotificationList> getNotificationsMANAGER(
-      @RequestHeader Long userId) {
+      @PathVariable Long storeId) {
     return CommonResponse.success(
-        notificationQueryFacadeHandler.getNotifications(userId, Role.MANAGER));
+        notificationQueryFacadeHandler.getNotifications(storeId, Role.MANAGER));
   }
 
-  @GetMapping("/manager/unread-notification")
-  public CommonResponse<NotificationCommand.UnreadNotificationCount> getUnreadNotificationCountMANAGER(
-      @RequestHeader Long userId) {
+  @GetMapping("/manager/{storeId}/unread-notification")
+  public CommonResponse<NotificationCommand.UnreadNotificationCount>
+      getUnreadNotificationCountMANAGER(@PathVariable Long storeId) {
     return CommonResponse.success(
-        notificationQueryFacadeHandler.getUnreadNotification(userId, Role.MANAGER));
+        notificationQueryFacadeHandler.getUnreadNotification(storeId, Role.MANAGER));
   }
 
   @GetMapping("/admin")
@@ -50,8 +51,8 @@ public class NotificationQueryRestController {
   }
 
   @GetMapping("/admin/unread-notification")
-  public CommonResponse<NotificationCommand.UnreadNotificationCount> getUnreadNotificationCountADMIN(
-      @RequestHeader Long userId) {
+  public CommonResponse<NotificationCommand.UnreadNotificationCount>
+      getUnreadNotificationCountADMIN(@RequestHeader Long userId) {
     return CommonResponse.success(
         notificationQueryFacadeHandler.getUnreadNotification(userId, Role.ADMIN));
   }
