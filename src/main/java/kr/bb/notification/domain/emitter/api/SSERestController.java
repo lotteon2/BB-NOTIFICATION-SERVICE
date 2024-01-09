@@ -19,16 +19,16 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SSERestController {
   private final SseService sseService;
 
-  @GetMapping(value = "subscribe/manager/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  @GetMapping(value = "subscribe/manager/{storeId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter subscribeManagerLocal(
-      @PathVariable Long userId,
+      @PathVariable Long storeId,
       @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "")
           String lastEventId,
       HttpServletResponse response) {
     response.addHeader("X-Accel-Buffering", "no");
     response.addHeader(HttpHeaders.CONNECTION, "keep-alive");
     response.addHeader(HttpHeaders.CACHE_CONTROL, "no-cache");
-    return sseService.subscribe(userId, Role.MANAGER.getRole());
+    return sseService.subscribe(storeId, Role.MANAGER.getRole());
   }
 
   @GetMapping(value = "subscribe/admin", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
