@@ -8,9 +8,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicateEventHandleAnnotation {
-  String eventId(); // Specify eventId for constructing the cache key
+  String getEventType();
 
-  String userId(); // Specify userId for constructing the cache key
-
-  long ttl() default 180; // Default TTL is 3 minutes
+  long getTtl() default 1L;
 }

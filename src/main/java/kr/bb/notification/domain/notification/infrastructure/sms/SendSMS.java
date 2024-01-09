@@ -2,6 +2,7 @@ package kr.bb.notification.domain.notification.infrastructure.sms;
 
 import java.util.HashMap;
 import java.util.Map;
+import kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation;
 import kr.bb.notification.config.AWSConfiguration;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.action.InfrastructureActionHandler;
@@ -46,6 +47,7 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
     snsClient.setSMSAttributes(request);
   }
 
+  @DuplicateEventHandleAnnotation(getEventType = "sms")
   @Override
   public void publish(NotificationInformation notifyData) {
     SnsClient snsClient = awsConfiguration.snsClient();

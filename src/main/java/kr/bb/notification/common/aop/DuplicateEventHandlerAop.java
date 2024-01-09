@@ -1,8 +1,11 @@
 package kr.bb.notification.common.aop;
 
+import bloomingblooms.domain.notification.Role;
+import java.util.concurrent.TimeUnit;
+import kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation;
+import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,33 +19,36 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DuplicateEventHandlerAop {
   private final RedisTemplate<String, Object> redisTemplate;
-  // https://alwayspr.tistory.com/34
 
+  @Pointcut("@annotation(duplicateEventHandleAnnotation)")
+  public void duplicateEvent(DuplicateEventHandleAnnotation duplicateEventHandleAnnotation) {}
 
-  @Pointcut("@annotation(kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation)")
-  public void duplicateEvent() {}
+  @Around(
+      value = "duplicateEvent(duplicateEventHandleAnnotation) && args(notifyData)",
+      argNames = "joinPoint,notifyData,duplicateEventHandleAnnotation")
+  public Object duplicateEventHandlerAop(
+      ProceedingJoinPoint joinPoint,
+      NotificationInformation notifyData,
+      DuplicateEventHandleAnnotation duplicateEventHandleAnnotation)
+      throws Throwable {
+    String eventId = notifyData.getEventId();
+    String id = String.valueOf(notifyData.getId());
+    Role role = notifyData.getRole();
+    String eventType = duplicateEventHandleAnnotation.getEventType();
+    long ttl = duplicateEventHandleAnnotation.getTtl();
 
-  @Around("duplicateEvent()")
-  public Object duplicateEventHandlerAop(ProceedingJoinPoint joinPoint) throws Throwable {
-    String eventId = null;
-    Object[] args = joinPoint.getArgs();
+    String generateEventId = eventId + ":" + id + ":" + role + ":" + eventType;
+    Object event = redisTemplate.opsForValue().get(generateEventId);
+    log.info("event id : " + generateEventId);
+    if (event == null) {
+      redisTemplate.opsForValue().set(generateEventId, eventType);
+      redisTemplate.expire(generateEventId, ttl, TimeUnit.MINUTES); // TODO: test 후 Days로 변경
 
-    // Check if data exists in Redis
-    Object cachedData = redisTemplate.opsForValue().get(eventId);
+      Object[] args = joinPoint.getArgs();
 
-    Object result = joinPoint.proceed(); // run method
-
-    if (cachedData != null) {
-      // Data exists in cache, return it without executing the method
-      return cachedData;
+      return joinPoint.proceed(args);
+    } else {
+      return null;
     }
-
-    // Data doesn't exist in cache, proceed to execute the method
-    Object result = joinPoint.proceed();
-
-    // Save the result in Redis with the specified TTL
-    redisTemplate.opsForValue().set(key, result, duplicateEventHandlerAop.ttl());
-
-    return result;
   }
 }
