@@ -8,7 +8,6 @@ import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.MemberNotificationCommand;
 import kr.bb.notification.domain.notification.entity.Notification;
 import kr.bb.notification.domain.notification.entity.NotificationCommand;
-import kr.bb.notification.domain.notification.repository.MemberNotificationJpaRepository;
 import kr.bb.notification.domain.notification.repository.NotificationJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
