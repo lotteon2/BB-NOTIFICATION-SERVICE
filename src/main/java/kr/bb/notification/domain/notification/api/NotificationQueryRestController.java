@@ -5,11 +5,13 @@ import bloomingblooms.response.CommonResponse;
 import kr.bb.notification.domain.notification.entity.NotificationCommand;
 import kr.bb.notification.domain.notification.helper.NotificationQueryActionHelper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class NotificationQueryRestController {
@@ -18,6 +20,7 @@ public class NotificationQueryRestController {
   @GetMapping("/customer")
   public CommonResponse<NotificationCommand.NotificationList> getNotificationsCUSTOMER(
       @RequestHeader Long userId) {
+    log.info("userId" + userId);
     return CommonResponse.success(
         notificationQueryFacadeHandler.getNotifications(userId, Role.CUSTOMER));
   }
