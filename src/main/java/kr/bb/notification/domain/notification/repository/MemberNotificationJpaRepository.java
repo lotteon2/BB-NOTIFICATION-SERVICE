@@ -11,7 +11,8 @@ public interface MemberNotificationJpaRepository extends JpaRepository<MemberNot
       "SELECT m from MemberNotification m "
           + "left join Notification n "
           + "on m.notification.notificationId=n.notificationId "
-          + "where m.userId=:userId and m.role=:role")
+          + "where m.userId=:userId and m.role=:role "
+          + "order by m.createdAt desc ")
   List<MemberNotification> findNotifications(Long userId, Role role);
 
   @Query(
