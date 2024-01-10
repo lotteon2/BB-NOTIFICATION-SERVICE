@@ -125,7 +125,8 @@ public class NotificationSQSListener {
                       PublishNotificationInformation.makePublishNotificationInformation(
                           NewOrderEventItem.getNotificationURL(item.getOrderType()),
                           NewOrderEventItem.getNotificationKind(item.getOrderType()),
-                          Role.MANAGER));
+                          Role.MANAGER,
+                          "new-order-queue"));
               notificationActionHelper.publishNewOrderNotification(notificationData);
             });
 
@@ -307,7 +308,8 @@ public class NotificationSQSListener {
     notificationActionHelper.publishInqueryResponseNotification(notification);
     ack.acknowledge();
   }
-    @SqsListener(
+
+  @SqsListener(
       value = "${cloud.aws.sqs.new-order-status-queue.name}",
       deletionPolicy = SqsMessageDeletionPolicy.NEVER)
   public void consumeNewOrderStatusQueue(

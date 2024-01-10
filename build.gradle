@@ -44,7 +44,15 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'software.amazon.awssdk:sns:2.21.37'
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401080033'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401091420'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.17'
+
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation("it.ozimov:embedded-redis:0.7.2")
+    implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
 
     testImplementation 'org.mockito:mockito-core:4.8.0'
 
@@ -80,7 +88,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.emitter.**",  "**.infrastructure.**"]
+            excludes = ["*.mapper*", "**.emitter.**", "**.infrastructure.**"]
         }
     }
 }

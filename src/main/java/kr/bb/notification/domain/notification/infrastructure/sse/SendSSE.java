@@ -1,5 +1,6 @@
 package kr.bb.notification.domain.notification.infrastructure.sse;
 
+import kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation;
 import kr.bb.notification.domain.emitter.application.SseService;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import kr.bb.notification.domain.notification.infrastructure.action.InfrastructureActionHandler;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class SendSSE implements InfrastructureActionHandler<NotificationInformation> {
   private final SseService sseService;
 
+  @DuplicateEventHandleAnnotation(getEventType = "sse")
   @Override
   public void publish(NotificationInformation notifyData) {
     sseService.notify(notifyData);
