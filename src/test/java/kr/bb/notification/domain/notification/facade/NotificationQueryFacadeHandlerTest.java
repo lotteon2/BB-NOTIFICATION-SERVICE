@@ -3,6 +3,7 @@ package kr.bb.notification.domain.notification.facade;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import bloomingblooms.domain.notification.Role;
+import config.TestENV;
 import java.util.ArrayList;
 import java.util.List;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class NotificationQueryFacadeHandlerTest {
+class NotificationQueryFacadeHandlerTest extends TestENV {
 
   @MockBean SimpleMessageListenerContainer simpleMessageListenerContainer;
   @Autowired NotificationJpaRepository notificationJpaRepository;

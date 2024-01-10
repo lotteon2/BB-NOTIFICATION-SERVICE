@@ -125,8 +125,7 @@ public class NotificationSQSListener {
                       PublishNotificationInformation.makePublishNotificationInformation(
                           NewOrderEventItem.getNotificationURL(item.getOrderType()),
                           NewOrderEventItem.getNotificationKind(item.getOrderType()),
-                          Role.MANAGER,
-                          "new-order-queue"));
+                          Role.MANAGER));
               notificationActionHelper.publishNewOrderNotification(notificationData);
             });
 

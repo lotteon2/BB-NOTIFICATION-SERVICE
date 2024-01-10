@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.4.RELEASE'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'software.amazon.awssdk:sns:2.21.37'
-    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401091420'
+    implementation 'io.github.lotteon-maven:blooming-blooms-utils:202401100155'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.17'
 
@@ -53,6 +53,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation("it.ozimov:embedded-redis:0.7.2")
     implementation 'org.redisson:redisson-spring-boot-starter:3.17.0'
+
+    // testcontainers
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.17.6"
+    testImplementation "org.testcontainers:junit-jupiter:1.17.6"
 
     testImplementation 'org.mockito:mockito-core:4.8.0'
 
@@ -88,7 +93,7 @@ jacocoTestCoverageVerification {
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-            excludes = ["*.mapper*", "**.emitter.**", "**.infrastructure.**"]
+            excludes = ["*.mapper*", "**.emitter.**", "**.infrastructure.**", "**.aop.**", "**.annotation.**"]
         }
     }
 }
@@ -102,7 +107,9 @@ test {
                      "**/handler/**",
                      "**/common/**",
                      "**/api/**",
-                     "**/emitter/**"
+                     "**/emitter/**",
+                     "**/aop/**",
+                     "**/annotation/**"
         ]
     }
     useJUnitPlatform()
@@ -126,7 +133,9 @@ jacocoTestReport {
                             "**/*mapper*",
                             "**/*Config*",
                             "**/*Dto*",
-                            "**/emitter/**"
+                            "**/emitter/**",
+                            "**/aop/**",
+                            "**/annotation/**"
                     ] + Qdomains)
                 })
         )
