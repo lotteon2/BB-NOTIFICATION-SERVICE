@@ -104,7 +104,9 @@ public class NotificationCommand {
                       .role(restoreNotification.getPublishInformation().getRole())
                       .notificationKind(
                           restoreNotification.getPublishInformation().getNotificationKind())
-                      .redirectUrl(restoreNotification.getPublishInformation().getNotificationUrl())
+                      .redirectUrl(
+                          restoreNotification.getPublishInformation().getNotificationUrl()
+                              + restoreNotification.getWhoToNotify().getProductId())
                       .eventId(restoreNotification.getPublishInformation().getEventId())
                       .build())
           .collect(Collectors.toList());
