@@ -9,6 +9,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DuplicateEventHandleAnnotation {
   String getEventType();
-
-  long getTtl() default 1L;
 }
