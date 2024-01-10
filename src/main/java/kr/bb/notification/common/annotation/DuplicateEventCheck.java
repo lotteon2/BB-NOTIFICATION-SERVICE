@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DuplicateEventHandleAnnotation {
-  String getEventType();
+public @interface DuplicateEventCheck {
+
+    String getEventType();
 }
