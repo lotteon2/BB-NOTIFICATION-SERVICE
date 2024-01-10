@@ -85,6 +85,7 @@ public class NotificationCommand {
     private String phoneNumber;
     private Role role;
     private NotificationKind notificationKind;
+    private String eventId;
 
     public static List<NotificationInformation> getResaleNotificationData(
         NotificationData<ResaleNotificationList> restoreNotification) {
@@ -104,6 +105,7 @@ public class NotificationCommand {
                       .notificationKind(
                           restoreNotification.getPublishInformation().getNotificationKind())
                       .redirectUrl(restoreNotification.getPublishInformation().getNotificationUrl())
+                      .eventId(restoreNotification.getPublishInformation().getEventId())
                       .build())
           .collect(Collectors.toList());
     }
@@ -112,6 +114,7 @@ public class NotificationCommand {
         PublishNotificationInformation publishNotificationInformation, Long id) {
       return NotificationInformation.builder()
           .id(id)
+          .eventId(publishNotificationInformation.getEventId())
           .role(publishNotificationInformation.getRole())
           .notificationKind(publishNotificationInformation.getNotificationKind())
           .redirectUrl(publishNotificationInformation.getNotificationUrl())
@@ -122,6 +125,7 @@ public class NotificationCommand {
     public static NotificationInformation getDeliveryNotificationData(
         NotificationData<DeliveryNotification> notificationData) {
       return NotificationInformation.builder()
+          .eventId(notificationData.getPublishInformation().getEventId())
           .role(notificationData.getPublishInformation().getRole())
           .phoneNumber(notificationData.getWhoToNotify().getPhoneNumber())
           .type(notificationData.getWhoToNotify().getDeliveryStatus().getMessage())
@@ -134,6 +138,7 @@ public class NotificationCommand {
     public static NotificationInformation getSMSData(
         NotificationData<InqueryResponseNotification> notification) {
       return NotificationInformation.builder()
+          .eventId(notification.getPublishInformation().getEventId())
           .notificationKind(notification.getPublishInformation().getNotificationKind())
           .role(notification.getPublishInformation().getRole())
           .id(notification.getWhoToNotify().getUserId())
@@ -146,6 +151,7 @@ public class NotificationCommand {
     public static NotificationInformation getNewOrderStatusData(
         NotificationData<OrderStatusNotification> notification) {
       return NotificationInformation.builder()
+          .eventId(notification.getPublishInformation().getEventId())
           .notificationKind(notification.getPublishInformation().getNotificationKind())
           .phoneNumber(notification.getWhoToNotify().getPhoneNumber())
           .redirectUrl(notification.getPublishInformation().getNotificationUrl())
