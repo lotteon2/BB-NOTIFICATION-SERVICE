@@ -1,6 +1,5 @@
 package config;
 
-import kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation;
 import kr.bb.notification.common.aop.DuplicateEventHandlerAop;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;

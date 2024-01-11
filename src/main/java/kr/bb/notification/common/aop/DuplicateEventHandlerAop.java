@@ -2,7 +2,7 @@ package kr.bb.notification.common.aop;
 
 import bloomingblooms.domain.notification.Role;
 import java.util.concurrent.TimeUnit;
-import kr.bb.notification.common.annotation.DuplicateEventHandleAnnotation;
+import kr.bb.notification.common.annotation.DuplicateEventCheck;
 import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,14 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class DuplicateEventHandlerAop {
+
   private final RedisTemplate<String, Object> redisTemplate;
 
   @Value("${cache.expire}")
   private int expire;
 
   @Pointcut("@annotation(duplicateEventHandleAnnotation)")
-  public void duplicateEvent(DuplicateEventHandleAnnotation duplicateEventHandleAnnotation) {}
+  public void duplicateEvent(DuplicateEventCheck duplicateEventHandleAnnotation) {}
 
   @Around(
       value = "duplicateEvent(duplicateEventHandleAnnotation) && args(notifyData)",
@@ -33,7 +34,7 @@ public class DuplicateEventHandlerAop {
   public Object duplicateEventHandlerAop(
       ProceedingJoinPoint joinPoint,
       NotificationInformation notifyData,
-      DuplicateEventHandleAnnotation duplicateEventHandleAnnotation)
+      DuplicateEventCheck duplicateEventHandleAnnotation)
       throws Throwable {
     String eventId = notifyData.getEventId();
     String id = String.valueOf(notifyData.getId());
@@ -51,8 +52,7 @@ public class DuplicateEventHandlerAop {
       Object[] args = joinPoint.getArgs();
 
       return joinPoint.proceed(args);
-    } else {
-      return null;
     }
+    return null;
   }
 }
