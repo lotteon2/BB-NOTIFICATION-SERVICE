@@ -86,6 +86,7 @@ public class NotificationCommand {
     private Role role;
     private NotificationKind notificationKind;
     private String eventId;
+    private String payload;
 
     public static List<NotificationInformation> getResaleNotificationData(
         NotificationData<ResaleNotificationList> restoreNotification) {
