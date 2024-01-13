@@ -34,6 +34,7 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
                   + "\n"
                   + notifyData.getContent()
                   + "\n"
+                  + "https://blooming.blooms.mall.stockey.kr"
                   + notifyData.getRedirectUrl())
           .phoneNumber("+82" + notifyData.getPhoneNumber())
           .build();
