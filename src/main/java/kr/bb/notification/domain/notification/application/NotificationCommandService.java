@@ -29,7 +29,9 @@ public class NotificationCommandService {
 
   public void saveResaleNotification(NotificationData<ResaleNotificationList> restoreNotification) {
     Notification notification =
-        NotificationCommand.toEntity(restoreNotification.getPublishInformation());
+        NotificationCommand.toEntity(
+            restoreNotification.getPublishInformation(),
+            restoreNotification.getWhoToNotify().getProductId());
     List<MemberNotification> memberNotifications =
         MemberNotificationCommand.toEntityList(restoreNotification.getWhoToNotify(), notification);
     notification.getMemberNotifications().addAll(memberNotifications);

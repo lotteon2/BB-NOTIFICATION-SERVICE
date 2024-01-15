@@ -17,6 +17,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class NotificationCommand {
+  public static Notification toEntity(PublishNotificationInformation message, String productId) {
+    return Notification.builder()
+        .notificationContent(message.getNotificationKind().getMessage())
+        .notificationLink(message.getNotificationUrl() + productId)
+        .build();
+  }
+
   public static Notification toEntity(PublishNotificationInformation message) {
     return Notification.builder()
         .notificationContent(message.getNotificationKind().getMessage())
