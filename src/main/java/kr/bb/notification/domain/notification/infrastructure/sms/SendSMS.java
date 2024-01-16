@@ -24,7 +24,11 @@ public class SendSMS implements InfrastructureActionHandler<NotificationInformat
   private static PublishRequest makePublishRequest(NotificationInformation notifyData) {
     if (notifyData.getContent() == null)
       return PublishRequest.builder()
-          .message(notifyData.getType() + "\n" + notifyData.getRedirectUrl())
+          .message(
+              notifyData.getType()
+                  + "\n"
+                  + "https://blooming.blooms.mall.stockey.kr"
+                  + notifyData.getRedirectUrl())
           .phoneNumber("+82" + notifyData.getPhoneNumber())
           .build();
     else
