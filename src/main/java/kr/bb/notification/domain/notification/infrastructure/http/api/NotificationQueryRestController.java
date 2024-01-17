@@ -72,14 +72,13 @@ public class NotificationQueryRestController {
   }
 
   @PutMapping("admin/check")
-  public void adminNotificationCheck(
-      @RequestBody List<Long> notificationId, @RequestHeader Long userId) {
-    notificationCommandService.updateNotificationIsRead(notificationId, userId, Role.ADMIN);
+  public void adminNotificationCheck(@RequestBody List<Long> notificationId) {
+    notificationCommandService.updateNotificationIsRead(notificationId, 100L, Role.ADMIN);
   }
 
-  @PutMapping("manager/check")
+  @PutMapping("manager/{storeId}/check")
   public void managerNotificationCheck(
-      @RequestBody List<Long> notificationId, @RequestHeader Long userId) {
-    notificationCommandService.updateNotificationIsRead(notificationId, userId, Role.MANAGER);
+      @RequestBody List<Long> notificationId, @PathVariable Long storeId) {
+    notificationCommandService.updateNotificationIsRead(notificationId, storeId, Role.MANAGER);
   }
 }
