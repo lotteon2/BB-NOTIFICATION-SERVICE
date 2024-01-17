@@ -2,7 +2,7 @@ package kr.bb.notification.domain.notification.helper;
 
 import bloomingblooms.domain.notification.Role;
 import kr.bb.notification.domain.notification.application.NotificationQueryService;
-import kr.bb.notification.domain.notification.entity.NotificationCommand;
+import kr.bb.notification.domain.notification.mapper.NotificationCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -3,7 +3,7 @@ package kr.bb.notification.common.aop;
 import bloomingblooms.domain.notification.Role;
 import java.util.concurrent.TimeUnit;
 import kr.bb.notification.common.annotation.DuplicateEventCheck;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.mapper.NotificationCommand.NotificationInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

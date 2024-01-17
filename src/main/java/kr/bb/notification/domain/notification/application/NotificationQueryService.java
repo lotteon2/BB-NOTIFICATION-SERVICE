@@ -4,7 +4,7 @@ import bloomingblooms.domain.notification.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
-import kr.bb.notification.domain.notification.entity.NotificationCommand;
+import kr.bb.notification.domain.notification.mapper.NotificationCommand;
 import kr.bb.notification.domain.notification.repository.MemberNotificationJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

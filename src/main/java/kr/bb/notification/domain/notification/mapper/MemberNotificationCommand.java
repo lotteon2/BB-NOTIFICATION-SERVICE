@@ -1,9 +1,11 @@
-package kr.bb.notification.domain.notification.entity;
+package kr.bb.notification.domain.notification.mapper;
 
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.notification.domain.notification.entity.MemberNotification;
+import kr.bb.notification.domain.notification.entity.Notification;
 
 public class MemberNotificationCommand {
 

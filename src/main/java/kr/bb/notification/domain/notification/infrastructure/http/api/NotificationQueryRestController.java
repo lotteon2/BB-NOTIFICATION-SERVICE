@@ -1,8 +1,8 @@
-package kr.bb.notification.domain.notification.api;
+package kr.bb.notification.domain.notification.infrastructure.http.api;
 
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.response.CommonResponse;
-import kr.bb.notification.domain.notification.entity.NotificationCommand;
+import kr.bb.notification.domain.notification.mapper.NotificationCommand;
 import kr.bb.notification.domain.notification.helper.NotificationQueryActionHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
