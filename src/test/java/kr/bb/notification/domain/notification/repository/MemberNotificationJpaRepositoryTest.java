@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import bloomingblooms.domain.notification.Role;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.Notification;
@@ -64,14 +65,8 @@ class MemberNotificationJpaRepositoryTest {
     List<MemberNotification> notifications =
         memberNotificationJpaRepository.findNotifications(1L, Role.CUSTOMER);
 
-    for (MemberNotification m : notifications) {
-      System.out.println(
-          m.getNotification().getNotificationId()
-              + " :: "
-              + m.getIsRead()
-              + " :: "
-              + m.getUserId());
-    }
-
+    List<MemberNotification> collect =
+        notifications.stream().filter(MemberNotification::getIsRead).collect(Collectors.toList());
+    assertThat(collect.size()).isEqualTo(2);
   }
 }
