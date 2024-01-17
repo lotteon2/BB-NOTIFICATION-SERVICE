@@ -1,4 +1,4 @@
-package kr.bb.notification.domain.notification.entity;
+package kr.bb.notification.domain.notification.mapper;
 
 import bloomingblooms.domain.notification.NotificationData;
 import bloomingblooms.domain.notification.NotificationKind;
@@ -10,6 +10,8 @@ import bloomingblooms.domain.order.OrderStatusNotification;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.bb.notification.domain.notification.entity.MemberNotification;
+import kr.bb.notification.domain.notification.entity.Notification;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +49,7 @@ public class NotificationCommand {
     private Long notificationId;
     private String notificationContent;
     private String notificationLink;
+    private Boolean isRead;
   }
 
   @Getter
@@ -61,6 +64,7 @@ public class NotificationCommand {
                   .map(
                       item ->
                           NotificationItem.builder()
+                              .isRead(item.getIsRead())
                               .notificationId(item.getMemberNotificationId())
                               .notificationLink(item.getNotification().getNotificationLink())
                               .notificationContent(item.getNotification().getNotificationContent())

@@ -2,7 +2,7 @@ package kr.bb.notification.domain.emitter.application;
 
 import java.io.IOException;
 import kr.bb.notification.domain.emitter.repository.SSERepository;
-import kr.bb.notification.domain.notification.entity.NotificationCommand.NotificationInformation;
+import kr.bb.notification.domain.notification.mapper.NotificationCommand.NotificationInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
