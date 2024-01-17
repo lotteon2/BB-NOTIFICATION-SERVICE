@@ -49,6 +49,7 @@ public class NotificationCommand {
     private Long notificationId;
     private String notificationContent;
     private String notificationLink;
+    private Boolean isRead;
   }
 
   @Getter
@@ -63,6 +64,7 @@ public class NotificationCommand {
                   .map(
                       item ->
                           NotificationItem.builder()
+                              .isRead(item.getIsRead())
                               .notificationId(item.getMemberNotificationId())
                               .notificationLink(item.getNotification().getNotificationLink())
                               .notificationContent(item.getNotification().getNotificationContent())
