@@ -59,7 +59,7 @@ public class NotificationCommandService {
             .map(
                 item ->
                     MemberNotificationCommand.toEntity(
-                        1L, publishInformation.getRole(), notification))
+                        item, publishInformation.getRole(), notification))
             .collect(Collectors.toList());
     notification.setMemberNotifications(memberNotifications);
     notificationJpaRepository.save(notification);
