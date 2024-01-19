@@ -5,6 +5,7 @@ import bloomingblooms.domain.notification.PublishNotificationInformation;
 import bloomingblooms.domain.notification.Role;
 import bloomingblooms.domain.resale.ResaleNotificationList;
 import java.util.List;
+import java.util.stream.Collectors;
 import kr.bb.notification.domain.notification.entity.MemberNotification;
 import kr.bb.notification.domain.notification.entity.Notification;
 import kr.bb.notification.domain.notification.mapper.MemberNotificationCommand;
@@ -48,5 +49,19 @@ public class NotificationCommandService {
 
   public void updateNotificationIsRead(List<Long> notificationId, Long userId, Role role) {
     memberNotificationJpaRepository.updateNotificationIsRead(notificationId, userId, role);
+  }
+
+  public void saveMultipleNotification(
+      PublishNotificationInformation publishInformation, List<Long> storeIdList) {
+    Notification notification = NotificationCommand.toEntity(publishInformation);
+    List<MemberNotification> memberNotifications =
+        storeIdList.stream()
+            .map(
+                item ->
+                    MemberNotificationCommand.toEntity(
+                        1L, publishInformation.getRole(), notification))
+            .collect(Collectors.toList());
+    notification.setMemberNotifications(memberNotifications);
+    notificationJpaRepository.save(notification);
   }
 }
