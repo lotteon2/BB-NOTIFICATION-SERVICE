@@ -65,7 +65,7 @@ public class NotificationCommand {
                       item ->
                           NotificationItem.builder()
                               .isRead(item.getIsRead())
-                              .notificationId(item.getMemberNotificationId())
+                              .notificationId(item.getNotification().getNotificationId())
                               .notificationLink(item.getNotification().getNotificationLink())
                               .notificationContent(item.getNotification().getNotificationContent())
                               .build())
