@@ -224,6 +224,7 @@ public class NotificationSQSListener {
                 settlement.getPublishInformation(), Role.MANAGER));
     // call facade
     notificationActionHelper.publishSettlementNotification(notification);
+    ack.acknowledge();
   }
 
   /**
@@ -253,6 +254,7 @@ public class NotificationSQSListener {
                 outOfStock.getPublishInformation(), Role.MANAGER));
     // call facade
     notificationActionHelper.publishOutOfStockNotification(notification);
+    ack.acknowledge();
   }
 
   /**
